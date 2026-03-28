@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gone Fishin' — New England</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a1628;display:flex;align-items:center;justify-content:center;height:100vh;overflow:hidden;font-family:'Press Start 2P',monospace}
+canvas{display:block;cursor:crosshair}
+.ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(5,10,28,0.96);padding:20px;text-align:center}
+.ov.h{display:none}
+h1{font-size:clamp(16px,4vw,30px);color:#ffd700;text-shadow:4px 4px #7b6000;margin-bottom:6px;line-height:1.5}
+h2{font-size:clamp(9px,2vw,15px);color:#64b5f6;margin-bottom:16px;line-height:1.7}
+.sub{font-size:clamp(6px,1.1vw,9px);color:#546;margin-bottom:22px;line-height:2.2}
+.btn{font-family:'Press Start 2P',monospace;font-size:clamp(7px,1.3vw,11px);padding:11px 24px;background:#e91e63;color:#fff;border:3px solid #f48fb1;cursor:pointer;margin:5px;transition:all .12s}
+.btn:hover{background:#f06292;transform:scale(1.05)}
+.btn.y{background:#f9a825;border-color:#ffd54f;color:#000}
+.btn.g{background:#2e7d32;border-color:#66bb6a}
+.btn.b{background:#1565c0;border-color:#64b5f6}
+#hud{position:absolute;top:0;left:0;right:0;display:none;justify-content:space-between;align-items:center;padding:6px 10px;background:rgba(0,0,0,0.7);flex-wrap:wrap;gap:3px;pointer-events:none}
+.hi{font-size:clamp(5px,0.9vw,8px);color:#ffd700;line-height:1.8}.hi span{color:#fff}
+.hb{font-family:'Press Start 2P',monospace;font-size:6px;padding:3px 7px;background:#e91e63;color:#fff;border:2px solid #f48fb1;cursor:pointer;pointer-events:all}
+#reelWrap{position:absolute;bottom:72px;left:50%;transform:translateX(-50%);width:min(300px,78vw);display:none;text-align:center}
+#reelLbl{font-size:clamp(5px,0.9vw,7px);color:#fff;margin-bottom:4px}
+#reelTrack{width:100%;height:18px;background:#111;border:2px solid #444;position:relative}
+#reelFill{height:100%;background:#e91e63;width:50%;transition:width .04s}
+#reelGood{position:absolute;top:0;bottom:0;background:rgba(76,175,80,0.4);left:5%;width:40%}
+#tensLbl{font-size:clamp(5px,0.8vw,7px);color:#ff9800;margin-top:3px}
+#catchPop{position:absolute;top:44%;left:50%;transform:translate(-50%,-50%);background:rgba(2,6,23,0.95);border:3px solid #ffd700;padding:16px 28px;text-align:center;display:none;min-width:190px;pointer-events:none}
+#catchPop.s{display:block;animation:pop .22s ease}
+@keyframes pop{from{transform:translate(-50%,-50%) scale(.3)}to{transform:translate(-50%,-50%) scale(1)}}
+#lvlPop{position:absolute;top:26%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.92);border:3px solid #ffd700;padding:14px 26px;text-align:center;display:none;pointer-events:none}
+#lvlPop.s{display:block;animation:pop .22s ease}
+#missLbl{position:absolute;font-size:clamp(7px,1.3vw,11px);color:#ef5350;display:none;pointer-events:none;text-shadow:0 0 8px #ef5350}
+#invP,#lbP{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(2,6,23,0.98);border:3px solid #ffd700;padding:18px;width:min(480px,93vw);max-height:82vh;overflow-y:auto;display:none;pointer-events:all}
+#invP h3,#lbP h3{font-size:clamp(8px,1.4vw,11px);color:#ffd700;margin-bottom:14px;text-align:center}
+.ig{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px}
+.ic{background:#060d20;border:2px solid #1a2a4a;padding:8px;text-align:center}
+.ic .nm{font-size:clamp(4px,0.8vw,6px);color:#ffd700;margin:4px 0 2px;line-height:1.5}
+.ic .ct{font-size:clamp(4px,0.7vw,6px);color:#546}
+.lr{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #0d1a2e;font-size:clamp(5px,0.8vw,7px)}
+.lrk{color:#ffd700;width:28px}.lnm{color:#fff;flex:1;margin:0 6px}.lsc{color:#4caf50}
+#hint{position:absolute;bottom:5px;left:50%;transform:translateX(-50%);font-size:clamp(4px,0.75vw,6px);color:#334;white-space:nowrap;pointer-events:none}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div class="ov" id="scT">
+  <h1>🎣 GONE FISHIN'</h1>
+  <h2>New England Edition</h2>
+  <div class="sub">Spot the fish · Aim your cast · Reel 'em in!<br>4 locations · 13 species · Skill-based casting</div>
+  <input id="nIn" placeholder="Your name..." style="font-family:'Press Start 2P',monospace;font-size:9px;padding:9px 12px;background:#060d20;border:2px solid #ffd700;color:#fff;width:210px;margin-bottom:14px;text-align:center">
+  <button class="btn y" onclick="startGame()">🎣 START FISHING</button>
+  <button class="btn b" onclick="openLB()">🏆 LEADERBOARD</button>
+  <div style="font-size:6px;color:#223;margin-top:10px">petegpt.ai · Built by Peter</div>
+</div>
+
+<div class="ov h" id="scO">
+  <h1>TIDE'S OUT!</h1>
+  <h2 id="goSc"></h2>
+  <div class="sub" id="goSub"></div>
+  <button class="btn y" onclick="saveScore()">💾 SAVE SCORE</button>
+  <button class="btn g" onclick="restart()">🎣 FISH AGAIN</button>
+  <button class="btn b" onclick="openLB()">🏆 LEADERBOARD</button>
+</div>
+
+<div id="hud">
+  <div class="hi">LVL<span id="hL">1</span></div>
+  <div class="hi">⭐<span id="hS">0</span></div>
+  <div class="hi">🐟<span id="hC">0</span></div>
+  <div class="hi">⏱<span id="hT">90</span>s</div>
+  <div style="display:flex;gap:4px">
+    <button class="hb" onclick="openInv()">🎒</button>
+    <button class="hb" onclick="openLB()">🏆</button>
+  </div>
+</div>
+
+<div id="reelWrap">
+  <div id="reelLbl">MASH SPACE / CLICK TO REEL!</div>
+  <div id="reelTrack"><div id="reelGood"></div><div id="reelFill"></div></div>
+  <div id="tensLbl">TENSION: <span id="tV">50</span>%</div>
+</div>
+
+<div id="catchPop">
+  <canvas id="cpCv" width="56" height="56" style="image-rendering:pixelated;display:block;margin:0 auto 8px"></canvas>
+  <div id="cpN" style="font-size:clamp(7px,1.2vw,10px);color:#ffd700;margin-bottom:4px"></div>
+  <div id="cpW" style="font-size:clamp(5px,0.9vw,7px);color:#90a4ae;margin-bottom:4px"></div>
+  <div id="cpP" style="font-size:clamp(8px,1.3vw,11px);color:#4caf50"></div>
+  <div id="cpR" style="font-size:clamp(5px,0.9vw,7px);margin-top:4px"></div>
+</div>
+
+<div id="lvlPop"><div style="font-size:clamp(8px,1.5vw,12px);color:#ffd700;line-height:1.8" id="lvlT">LEVEL UP!</div></div>
+<div id="missLbl" style="top:40%;left:50%;transform:translateX(-50%)">MISSED!</div>
+<div id="hint">CLICK ON WATER TO CAST · SPACE/CLICK TO REEL · I=BAG · L=LB</div>
+
+<div id="invP"><h3>🎒 CATCH BAG</h3><div class="ig" id="invG"></div><div style="text-align:center;margin-top:14px"><button class="btn" onclick="closeInv()">CLOSE</button></div></div>
+<div id="lbP"><h3>🏆 LEADERBOARD — NEW ENGLAND</h3><div id="lbL"></div><div style="text-align:center;margin-top:14px"><button class="btn" onclick="closeLB()">CLOSE</button></div></div>
+
+<script>
+// ── SPRITES ────────────────────────────────────────────────────────────────
+const SP={
+  bass:[
+    '000330000',
+    '003333000',
+    '033355500',
+    '335555530',
+    '033355500',
+    '003333000',
+    '000330000',
+  ],
+  bluefish:[
+    '000220000',
+    '002222000',
+    '022244400',
+    '224444420',
+    '022244400',
+    '002222000',
+    '000220000',
+  ],
+  mackerel:[
+    '00b000000',
+    '0bbb00000',
+    '0bbbbb000',
+    'bbbbbbb00',
+    '0bbbbb000',
+    '0bbb00000',
+    '00b000000',
+  ],
+  lobster:[
+    'e0e000000',
+    'eee0e0000',
+    'eeeeee000',
+    'eeeeeee00',
+    'eeeeee000',
+    'eee0e0000',
+    'e0e000000',
+  ],
+  cod:[
+    '000880000',
+    '008888000',
+    '088899900',
+    '889999980',
+    '088899900',
+    '008888000',
+    '000880000',
+  ],
+  tuna:[
+    '000660000',
+    '006666000',
+    '066677700',
+    '667777760',
+    '066677700',
+    '006666000',
+    '000660000',
+  ],
+  halibut:[
+    '0000aa000',
+    '000aaaa00',
+    '00aaaacc0',
+    '0aaccccca',
+    '00aaaacc0',
+    '000aaaa00',
+    '0000aa000',
+  ],
+  seabass:[
+    '000990000',
+    '009999000',
+    '099922200',
+    '992222290',
+    '099922200',
+    '009999000',
+    '000990000',
+  ],
+  sword:[
+    'f000000ff',
+    '0f00000f0',
+    '0ff333300',
+    '3333333f0',
+    '0ff333300',
+    '0f00000f0',
+    'f000000ff',
+  ],
+  shark:[
+    '000aa0000',
+    '00aaaa000',
+    '0aaccca00',
+    'aacccccca',
+    '0aaccca00',
+    '00aaaa000',
+    '000aa0000',
+  ],
+  greatwhite:[
+    '000cc0000',
+    '00cccc000',
+    '0ccdddcc0',
+    'ccdddddcc',
+    '0ccdddcc0',
+    '00cccc000',
+    '000cc0000',
+  ],
+  boot:[
+    '000000000',
+    '066666600',
+    '066666660',
+    '066666660',
+    '666666660',
+    '066666600',
+    '000000000',
+  ],
+  seaweed:[
+    '030030000',
+    '333333000',
+    '033333300',
+    '003333330',
+    '033333300',
+    '333333000',
+    '030030000',
+  ],
+};
+const PAL={
+  '0':'transparent',' ':'transparent',
+  '2':'#29b6f6','3':'#43a047','4':'#2e7d32','5':'#1b5e20',
+  '6':'#1e88e5','7':'#1565c0','8':'#0d47a1','9':'#0288d1',
+  'a':'#9e9e9e','b':'#bdbdbd','c':'#e0e0e0','d':'#fff',
+  'e':'#ef5350','f':'#ff7043','4':'#2e7d32',
+  'b':'#26c6da','B':'#26c6da',
+};
+// cleaner palette
+const P2={
+  '0':'transparent',' ':'transparent',
+  '2':'#29b6f6','3':'#43a047','4':'#388e3c','5':'#1b5e20',
+  '6':'#1e88e5','7':'#1565c0','8':'#0d47a1','9':'#42a5f5',
+  'a':'#9e9e9e','b':'#26c6da','c':'#e0e0e0','d':'#fff9c4',
+  'e':'#ef5350','f':'#ff7043','4':'#388e3c',
+};
+
+function drawSp(ctx,key,x,y,pw,ph){
+  const rows=(SP[key]||SP.bass);
+  rows.forEach((row,r)=>{
+    for(let c=0;c<row.length;c++){
+      const ch=row[c];
+      if(ch==='0'||ch===' ')continue;
+      ctx.fillStyle=P2[ch]||'#fff';
+      ctx.fillRect(Math.round(x+c*pw),Math.round(y+r*ph),Math.ceil(pw),Math.ceil(ph));
+    }
+  });
+}
+
+// ── FISH DATA ──────────────────────────────────────────────────────────────
+const FISH=[
+  {id:'bass',n:'Striped Bass',r:'Common',pts:100,lvl:1,w:'3-20 lbs',c:'#43a047',spd:1.2,sz:1.0},
+  {id:'bluefish',n:'Bluefish',r:'Common',pts:110,lvl:1,w:'2-12 lbs',c:'#29b6f6',spd:1.5,sz:0.9},
+  {id:'mackerel',n:'Mackerel',r:'Common',pts:80,lvl:1,w:'1-3 lbs',c:'#26c6da',spd:2.0,sz:0.75},
+  {id:'lobster',n:'Lobster',r:'Uncommon',pts:260,lvl:1,w:'1-3 lbs',c:'#ef5350',spd:0.6,sz:0.85},
+  {id:'cod',n:'Atlantic Cod',r:'Uncommon',pts:210,lvl:2,w:'5-25 lbs',c:'#8d6e63',spd:0.9,sz:1.1},
+  {id:'seabass',n:'Sea Bass',r:'Uncommon',pts:230,lvl:2,w:'2-8 lbs',c:'#42a5f5',spd:1.3,sz:0.95},
+  {id:'tuna',n:'Bluefin Tuna',r:'Rare',pts:440,lvl:2,w:'50-200 lbs',c:'#1e88e5',spd:3.2,sz:1.3},
+  {id:'halibut',n:'Halibut',r:'Rare',pts:480,lvl:3,w:'10-80 lbs',c:'#ab47bc',spd:0.5,sz:1.4},
+  {id:'sword',n:'Swordfish',r:'Epic',pts:750,lvl:3,w:'100-400 lbs',c:'#ff7043',spd:2.8,sz:1.2},
+  {id:'shark',n:'Blue Shark',r:'Epic',pts:700,lvl:3,w:'200-400 lbs',c:'#78909c',spd:2.2,sz:1.5},
+  {id:'greatwhite',n:'Great White',r:'Legendary',pts:2000,lvl:4,w:'1000+ lbs',c:'#eceff1',spd:1.8,sz:2.0},
+  {id:'boot',n:'Old Boot',r:'Trash',pts:-50,lvl:1,w:'1 lb',c:'#8d6e63',spd:0,sz:0.7},
+  {id:'seaweed',n:'Seaweed',r:'Trash',pts:-20,lvl:1,w:'0 lbs',c:'#2e7d32',spd:0,sz:0.8},
+];
+
+const LOCS=[
+  {name:'Boston Harbor',sky1:'#0d1117',sky2:'#0d2a3d',water1:'#0a1e33',water2:'#0d2e4a'},
+  {name:'Cape Cod Bay',sky1:'#0a1628',sky2:'#0d2e1e',water1:'#0a2818',water2:'#0d3d25'},
+  {name:'Nantucket Sound',sky1:'#1a0a2e',sky2:'#1a1060',water1:'#100a40',water2:'#1a1565'},
+  {name:'Georges Bank',sky1:'#0a1a0a',sky2:'#0a280a',water1:'#0a2010',water2:'#0d3318'},
+];
+
+// ── AUDIO ──────────────────────────────────────────────────────────────────
+let AC;
+function ac(){if(!AC)try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}return AC;}
+function beep(f,d,t='square',v=0.12){
+  try{const a=ac();if(!a)return;const o=a.createOscillator(),g=a.createGain();
+  o.connect(g);g.connect(a.destination);o.type=t;o.frequency.value=f;
+  g.gain.setValueAtTime(v,a.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001,a.currentTime+d);
+  o.start();o.stop(a.currentTime+d);}catch(e){}
+}
+function sfxSplash(){[250,200,150].forEach((f,i)=>setTimeout(()=>beep(f,.1,'sine',.1),i*35));}
+function sfxMiss(){[300,250,180].forEach((f,i)=>setTimeout(()=>beep(f,.08,'square',.08),i*60));}
+function sfxNibble(){beep(900,.04,'square',.07);setTimeout(()=>beep(1100,.04,'square',.07),110);}
+function sfxReel(){beep(350,.025,'sawtooth',.05);}
+function sfxCatch(r){
+  if(r==='Legendary'){[523,659,784,1047,1319].forEach((f,i)=>setTimeout(()=>beep(f,.14,'triangle',.18),i*120));}
+  else if(r==='Epic'){[523,659,784,1047].forEach((f,i)=>setTimeout(()=>beep(f,.11,'triangle',.14),i*100));}
+  else if(r==='Rare'){[440,554,659,784].forEach((f,i)=>setTimeout(()=>beep(f,.1,'square',.12),i*90));}
+  else beep(440,.08);
+}
+function sfxEscape(){[400,300,200,150].forEach((f,i)=>setTimeout(()=>beep(f,.1,'square',.1),i*70));}
+function sfxLvl(){[523,659,784,1047,1319,1568].forEach((f,i)=>setTimeout(()=>beep(f,.13,'triangle',.16),i*100));}
+function sfxCast(){beep(600,.04);setTimeout(()=>beep(400,.06,'sine',.12),60);}
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+const cv=document.getElementById('c'),cx=cv.getContext('2d');
+let W,H,gst='title';
+let score=0,catches=0,lvl=1,t=90;
+let tension=50,reelCd=0;
+let fishes=[],particles=[],ripples=[];
+let bobX=0,bobY=0,bobLanded=false,bobAnim=0;
+let waterA=0,starA=0,cloudX=0,waveOff=0;
+let currentFish=null;
+let pName='Angler',inventory={};
+let tInt=null;
+let aimX=W/2,aimY=300;
+let castLine=null; // {x1,y1,x2,y2,prog}
+
+function resize(){
+  W=cv.width=Math.min(window.innerWidth,820);
+  H=cv.height=Math.min(window.innerHeight,580);
+}
+window.addEventListener('resize',()=>{resize();});
+resize();
+
+// WATER TOP LINE
+function waterY(){return H*0.44;}
+
+// ── FISH MANAGEMENT ────────────────────────────────────────────────────────
+function spawnFish(){
+  if(fishes.length>=6)return;
+  const pool=FISH.filter(f=>f.lvl<=lvl&&f.spd>0);
+  const f=pool[Math.floor(Math.random()*pool.length)];
+  if(!f)return;
+  const fromR=Math.random()>0.5;
+  const depth=Math.random();
+  const baseY=waterY()+H*0.06+depth*(H*0.38);
+  const scl=f.sz*(0.9+depth*0.5)*(W/820);
+  const spd=f.spd*(0.7+Math.random()*0.6)*(fromR?-1:1);
+  fishes.push({
+    ...f,
+    x:fromR?W+80:-80,y:baseY,
+    vx:spd,vy:0,
+    scl,depth,
+    wobble:Math.random()*Math.PI*2,
+    wobbleSpd:0.03+Math.random()*0.02,
+    alpha:0.55+depth*0.35,
+    flip:fromR,
+    uid:Math.random()
+  });
+}
+
+function spawnStatic(){
+  // boots & seaweed on the bottom
+  ['boot','seaweed'].forEach(id=>{
+    if(Math.random()>0.3)return;
+    const f=FISH.find(f=>f.id===id);
+    fishes.push({...f,x:W*0.1+Math.random()*W*0.8,y:waterY()+H*0.55+Math.random()*H*0.1,
+      vx:0,vy:0,scl:1.2*(W/820),depth:0.9,wobble:0,wobbleSpd:0,alpha:0.7,flip:false,uid:Math.random()});
+  });
+}
+
+function pickFishFromPool(){
+  const pool=FISH.filter(f=>f.lvl<=lvl);
+  const w=pool.map(f=>{
+    if(f.r==='Legendary')return 1;if(f.r==='Epic')return 3;
+    if(f.r==='Rare')return 9;if(f.r==='Uncommon')return 20;
+    if(f.r==='Trash')return 5;return 50;
+  });
+  const tot=w.reduce((a,b)=>a+b,0);
+  let r=Math.random()*tot;
+  for(let i=0;i<pool.length;i++){r-=w[i];if(r<=0)return pool[i];}
+  return pool[0];
+}
+
+// ── INPUT ──────────────────────────────────────────────────────────────────
+document.addEventListener('mousemove',e=>{
+  const r=cv.getBoundingClientRect();
+  aimX=(e.clientX-r.left)*(W/r.width);
+  aimY=(e.clientY-r.top)*(H/r.height);
+});
+
+cv.addEventListener('click',e=>{
+  ac();
+  const r=cv.getBoundingClientRect();
+  const mx=(e.clientX-r.left)*(W/r.width);
+  const my=(e.clientY-r.top)*(H/r.height);
+  if(gst==='idle'){
+    if(my>waterY()-10){doCast(mx,my);}
+  } else if(gst==='reeling'){doReel();}
+});
+
+cv.addEventListener('touchstart',e=>{
+  e.preventDefault();ac();
+  const r=cv.getBoundingClientRect();
+  const t2=e.touches[0];
+  const mx=(t2.clientX-r.left)*(W/r.width);
+  const my=(t2.clientY-r.top)*(H/r.height);
+  if(gst==='idle'&&my>waterY()-10)doCast(mx,my);
+  else if(gst==='reeling')doReel();
+},{passive:false});
+
+document.addEventListener('keydown',e=>{
+  if(e.code==='Space'){e.preventDefault();if(gst==='reeling')doReel();}
+  if(e.code==='KeyI')toggleInv();
+  if(e.code==='KeyL')openLB();
+});
+
+function doCast(mx,my){
+  if(gst!=='idle')return;
+  bobX=mx;bobY=my;
+  bobLanded=true;
+  sfxCast();
+  castLine={x1:W*0.6,y1:H*0.27,x2:mx,y2:my,prog:0};
+  setTimeout(()=>{sfxSplash();spawnRipple(mx,my);},220);
+
+  // check if near a fish
+  let hit=null,bestDist=Infinity;
+  fishes.forEach(f=>{
+    const fw=7*f.scl,fh=5*f.scl;
+    const cx2=f.x+fw/2,cy2=f.y+fh/2;
+    const d=Math.hypot(mx-cx2,my-cy2);
+    const threshold=Math.max(fw,fh)*1.4+20;
+    if(d<threshold&&d<bestDist){bestDist=d;hit=f;}
+  });
+
+  if(hit){
+    currentFish=hit;
+    hit.vx=0; // stop the fish immediately
+    hit.vy=0;
+    setTimeout(()=>{
+      sfxNibble();spawnRipple(bobX,bobY);
+      // move fish to bob position
+      hit.x=bobX-7*hit.scl*Math.max(3.5,W/140)/2;
+      hit.y=bobY-7*hit.scl*Math.max(3.5,W/140)/2;
+      setTimeout(()=>{
+        if(gst==='idle'){
+          gst='reeling';tension=50;
+          document.getElementById('reelWrap').style.display='block';
+          document.getElementById('reelFill').style.width='50%';
+          document.getElementById('tV').textContent='50';
+        }
+      },600);
+    },500+Math.random()*800);
+  } else {
+    sfxMiss();showMiss(mx,my);
+    setTimeout(()=>{bobLanded=false;castLine=null;},1200);
+  }
+}
+
+function doReel(){
+  if(gst!=='reeling')return;
+  if(reelCd>0)return;
+  reelCd=5;sfxReel();
+  tension=Math.max(0,tension-20);
+  document.getElementById('reelFill').style.width=tension+'%';
+  document.getElementById('tV').textContent=Math.round(tension);
+  if(tension<=0)catchFish();
+}
+
+function catchFish(){
+  if(!currentFish)return;
+  const f=currentFish;
+  catches++;
+  const pts=Math.max(0,f.pts+Math.floor(Math.random()*40-20));
+  score+=pts;
+  inventory[f.id]=(inventory[f.id]||0)+1;
+  sfxCatch(f.r);
+  spawnBurst(bobX,bobY,f.c);
+  showCatchPopup(f,pts);
+  fishes=fishes.filter(fi=>fi.uid!==f.uid);
+  checkLvl();updateHUD();
+  gst='idle';bobLanded=false;castLine=null;currentFish=null;tension=50;
+  document.getElementById('reelWrap').style.display='none';
+}
+
+function showMiss(x,y){
+  const m=document.getElementById('missLbl');
+  m.style.left=x+'px';m.style.top=(y-30)+'px';
+  m.style.display='block';
+  setTimeout(()=>m.style.display='none',800);
+}
+
+function showCatchPopup(f,pts){
+  const cc=document.getElementById('cpCv');
+  const ctx2=cc.getContext('2d');ctx2.clearRect(0,0,56,56);
+  const pw=56/7,ph=56/7;
+  drawSp(ctx2,f.id,0,0,pw,ph);
+  document.getElementById('cpN').textContent=f.n;
+  document.getElementById('cpW').textContent=f.w;
+  document.getElementById('cpP').textContent=(pts>=0?'+':'')+pts+' PTS';
+  document.getElementById('cpR').textContent=f.r;
+  document.getElementById('cpR').style.color=f.c;
+  const p=document.getElementById('catchPop');
+  p.classList.add('s');setTimeout(()=>p.classList.remove('s'),2500);
+}
+
+function spawnBurst(x,y,color){
+  for(let i=0;i<28;i++){
+    const a=Math.random()*Math.PI*2,s=Math.random()*5+2;
+    particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-4,life:60,color,sz:Math.random()*5+2});
+  }
+}
+function spawnRipple(x,y){ripples.push({x,y,r:4,maxR:50,life:1});}
+
+function checkLvl(){
+  const th=[0,500,1400,3000,6000];
+  const nl=th.filter(t2=>score>=t2).length;
+  if(nl>lvl&&nl<=4){
+    lvl=nl;sfxLvl();
+    document.getElementById('lvlT').textContent='LEVEL '+lvl+'!\n'+LOCS[lvl-1].name;
+    document.getElementById('lvlPop').classList.add('s');
+    setTimeout(()=>document.getElementById('lvlPop').classList.remove('s'),2200);
+    t+=35;updateHUD();
+  }
+}
+
+// ── MAIN LOOP ──────────────────────────────────────────────────────────────
+function startGame(){
+  ac();
+  pName=document.getElementById('nIn').value.trim()||'Angler';
+  score=0;catches=0;lvl=1;t=90;inventory={};
+  gst='idle';tension=50;bobLanded=false;currentFish=null;castLine=null;
+  particles=[];ripples=[];fishes=[];
+  document.getElementById('scT').classList.add('h');
+  document.getElementById('scO').classList.add('h');
+  document.getElementById('hud').style.display='flex';
+  document.getElementById('hint').style.display='block';
+  updateHUD();
+  if(tInt)clearInterval(tInt);
+  tInt=setInterval(()=>{
+    if(gst==='gameover')return;
+    t--;updateHUD();if(t<=0)endGame();
+  },1000);
+  // spawn initial fish
+  for(let i=0;i<4;i++)spawnFish();
+  spawnStatic();
+  requestAnimationFrame(loop);
+}
+
+let lastT2=0;
+function loop(ts){
+  if(gst==='gameover')return;
+  const dt=Math.min((ts-lastT2)/16,3);lastT2=ts;
+  update(dt);draw();
+  requestAnimationFrame(loop);
+}
+
+function update(dt){
+  waterA+=0.015*dt;bobAnim+=0.08*dt;starA+=0.007*dt;cloudX=(cloudX+0.12*dt)%W;waveOff+=0.02*dt;
+  if(reelCd>0)reelCd-=dt;
+
+  if(gst==='reeling'){
+    tension=Math.min(100,tension+0.3*dt);
+    document.getElementById('reelFill').style.width=tension+'%';
+    document.getElementById('tV').textContent=Math.round(tension);
+    if(tension>=100){sfxEscape();gst='idle';bobLanded=false;castLine=null;currentFish=null;tension=50;document.getElementById('reelWrap').style.display='none';}
+  }
+
+  if(castLine&&castLine.prog<1){castLine.prog=Math.min(1,castLine.prog+0.06*dt);}
+
+  // fish movement
+  fishes.forEach(f=>{
+    if(currentFish&&f.uid===currentFish.uid){
+      // hooked fish wiggles near bob
+      f.x=bobX-7*f.scl*Math.max(3.5,W/140)/2+Math.sin(bobAnim*3)*8;
+      f.y=bobY-7*f.scl*Math.max(3.5,W/140)/2+Math.cos(bobAnim*2)*6;
+      return;
+    }
+    f.x+=f.vx*dt;
+    f.wobble+=f.wobbleSpd*dt;
+    f.y+=Math.sin(f.wobble)*0.3*dt;
+    if(f.vx>0&&f.x>W+80){f.x=-80;f.y=waterY()+H*0.06+Math.random()*H*0.38;f.flip=false;}
+    if(f.vx<0&&f.x<-80){f.x=W+80;f.y=waterY()+H*0.06+Math.random()*H*0.38;f.flip=true;}
+  });
+
+  // spawn fish periodically
+  if(Math.random()<0.008*dt)spawnFish();
+
+  // particles
+  particles=particles.filter(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=0.2*dt;p.life-=dt;return p.life>0;});
+
+  // ripples
+  ripples=ripples.filter(r=>{r.r+=1.5*dt;r.life=1-r.r/r.maxR;return r.r<r.maxR;});
+}
+
+// ── DRAW ───────────────────────────────────────────────────────────────────
+function draw(){
+  cx.clearRect(0,0,W,H);
+  const loc=LOCS[Math.min(lvl-1,3)];
+  const wt=waterY();
+
+  // SKY GRADIENT
+  const sg=cx.createLinearGradient(0,0,0,wt);
+  sg.addColorStop(0,loc.sky1);sg.addColorStop(1,loc.sky2);
+  cx.fillStyle=sg;cx.fillRect(0,0,W,wt);
+
+  // STARS
+  for(let i=0;i<55;i++){
+    const sx=(i*139+73)%W,sy=(i*97+11)%(wt*0.92);
+    const pulse=Math.sin(starA+i*0.7)*0.4+0.6;
+    cx.globalAlpha=pulse*0.7;cx.fillStyle='#fff';
+    cx.fillRect(sx,sy,i%4===0?2:1,i%4===0?2:1);
+  }
+  cx.globalAlpha=1;
+
+  // MOON
+  cx.fillStyle='#fffde7';cx.beginPath();cx.arc(W*0.12,H*0.1,20,0,Math.PI*2);cx.fill();
+  cx.fillStyle=loc.sky1;cx.beginPath();cx.arc(W*0.145,H*0.092,16,0,Math.PI*2);cx.fill();
+  const mg=cx.createRadialGradient(W*0.12,H*0.1,16,W*0.12,H*0.1,55);
+  mg.addColorStop(0,'rgba(255,253,220,.1)');mg.addColorStop(1,'transparent');
+  cx.fillStyle=mg;cx.beginPath();cx.arc(W*0.12,H*0.1,55,0,Math.PI*2);cx.fill();
+
+  // CLOUDS
+  cx.fillStyle='rgba(255,255,255,0.05)';
+  [[cloudX,wt*.18,100,24],[((cloudX+W*.4)%W),wt*.32,140,30],[((cloudX+W*.72)%W),wt*.12,70,20]].forEach(([cx2,cy,cw,ch])=>{
+    cx.beginPath();cx.ellipse(cx2,cy,cw,ch,0,0,Math.PI*2);cx.fill();
+  });
+
+  // WATER
+  const wg=cx.createLinearGradient(0,wt,0,H);
+  wg.addColorStop(0,loc.water1);wg.addColorStop(1,loc.water2);
+  cx.fillStyle=wg;cx.fillRect(0,wt,W,H-wt);
+
+  // WATER SURFACE
+  cx.strokeStyle='rgba(100,210,255,0.25)';cx.lineWidth=2;
+  cx.beginPath();
+  for(let x=0;x<=W;x+=4){
+    const y=wt+Math.sin(x/55+waveOff)*4+Math.sin(x/28+waveOff*1.3)*2;
+    x===0?cx.moveTo(x,y):cx.lineTo(x,y);
+  }
+  cx.stroke();
+
+  // WATER WAVES (depth lines)
+  for(let i=1;i<7;i++){
+    cx.strokeStyle=`rgba(100,180,255,${0.06+i*0.01})`;cx.lineWidth=1;
+    cx.beginPath();
+    for(let x=0;x<=W;x+=6){
+      const y=wt+H*(0.04+i*0.1)+Math.sin(x/60+waveOff+i)*4;
+      x===0?cx.moveTo(x,y):cx.lineTo(x,y);
+    }
+    cx.stroke();
+  }
+
+  // MOON SHIMMER ON WATER
+  for(let i=0;i<5;i++){
+    cx.fillStyle=`rgba(255,253,220,${0.06+i*0.01})`;
+    cx.fillRect(W*0.09+Math.sin(waterA+i*0.7)*10,wt+H*0.02+i*H*0.04,3+Math.sin(waterA+i)*2,H*0.03);
+  }
+
+  // FISH (underwater)
+  const baseScl=Math.max(3.5,W/140);
+  fishes.forEach(f=>{
+    const scl=f.scl*baseScl;
+    const fw=7*scl,fh=7*scl;
+    cx.save();cx.globalAlpha=f.alpha;
+    if(f.flip){cx.translate(f.x+fw,f.y);cx.scale(-1,1);drawSp(cx,f.id,0,0,fw/7,fh/7);}
+    else drawSp(cx,f.id,f.x,f.y,fw/7,fh/7);
+    // fish label (rare+)
+    if(f.r!=='Common'&&f.r!=='Trash'){
+      cx.globalAlpha=f.alpha*0.8;
+      cx.fillStyle=f.c;
+      cx.font=`${Math.max(4,W*0.007)}px 'Press Start 2P'`;
+      cx.textAlign='center';
+      cx.fillText(f.r==='Legendary'?'★'+f.n:f.n,f.x+fw/2,f.y-4);
+    }
+    cx.restore();
+  });
+
+  // RIPPLES
+  ripples.forEach(r=>{
+    cx.strokeStyle=`rgba(100,200,255,${r.life*0.6})`;cx.lineWidth=1.5;
+    cx.beginPath();cx.arc(r.x,r.y,r.r,0,Math.PI*2);cx.stroke();
+    cx.beginPath();cx.arc(r.x,r.y,r.r*0.5,0,Math.PI*2);cx.stroke();
+  });
+
+  // DOCK
+  cx.fillStyle='#4e342e';
+  for(let i=0;i<5;i++)cx.fillRect(W*0.5+i*W*0.09,wt-H*0.1,7,H*0.13);
+  cx.fillStyle='#6d4c41';
+  for(let i=0;i<14;i++){cx.fillRect(W*0.47+i*W*0.042,wt-H*0.1,W*0.038,7);cx.fillStyle='#5d4037';cx.fillRect(W*0.47+i*W*0.042,wt-H*0.1+5,W*0.038,2);cx.fillStyle='#6d4c41';}
+
+  // PLAYER
+  const px=W*0.63,py=wt-H*0.19;
+  cx.fillStyle='#37474f';cx.fillRect(px-5,py+28,5,12);cx.fillRect(px+1,py+28,5,12);
+  cx.fillStyle='#4e342e';cx.fillRect(px-7,py+37,7,6);cx.fillRect(px+1,py+37,8,6);
+  cx.fillStyle='#546e7a';cx.fillRect(px-8,py+10,16,18);
+  cx.fillStyle='#455a64';cx.fillRect(px-8,py+12,3,14);cx.fillRect(px+5,py+12,3,14);
+  cx.fillStyle='#ffcc80';cx.fillRect(px-6,py-2,12,12);
+  cx.fillStyle='#333';cx.fillRect(px-3,py+2,2,2);cx.fillRect(px+2,py+2,2,2);
+  cx.fillStyle='#5d4037';cx.fillRect(px-8,py-4,16,4);cx.fillRect(px-6,py-11,12,8);
+  cx.fillStyle='#8d6e63';cx.fillRect(px-6,py-5,12,2);
+  // arms
+  cx.fillStyle='#ffcc80';cx.fillRect(px-12,py+11,5,6);cx.fillRect(px+8,py+11,5,6);
+
+  // ROD
+  const rodTip={x:W*0.56,y:wt-H*0.26};
+  cx.strokeStyle='#a1887f';cx.lineWidth=3;cx.beginPath();cx.moveTo(px-9,py+14);cx.lineTo(rodTip.x,rodTip.y);cx.stroke();
+  cx.strokeStyle='#d7ccc8';cx.lineWidth=1;cx.beginPath();cx.moveTo(px-9,py+14);cx.lineTo(rodTip.x,rodTip.y);cx.stroke();
+
+  // CAST LINE (animated) - single clean line
+  if(castLine){
+    const prog=castLine.prog;
+    const ex=castLine.x1+(castLine.x2-castLine.x1)*prog;
+    const ey=castLine.y1+(castLine.y2-castLine.y1)*prog;
+    cx.strokeStyle='rgba(220,220,220,0.7)';cx.lineWidth=1.5;
+    cx.beginPath();cx.moveTo(castLine.x1,castLine.y1);cx.lineTo(ex,ey);
+    cx.stroke();
+  }
+
+  // BOB
+  if(bobLanded){
+    const by=bobY+Math.sin(bobAnim)*3;
+    // single line from rod tip to bob only
+    cx.strokeStyle='rgba(220,220,220,0.6)';cx.lineWidth=1.5;
+    cx.beginPath();cx.moveTo(rodTip.x,rodTip.y);cx.lineTo(bobX,by);cx.stroke();
+    // float body
+    cx.fillStyle='#ef5350';cx.fillRect(bobX-5,by-7,10,9);
+    cx.fillStyle='#fff';cx.fillRect(bobX-3,by-5,6,5);
+    cx.fillStyle='#ef5350';cx.fillRect(bobX-1,by+2,2,6);
+    // glow if fish on
+    if(currentFish){
+      cx.strokeStyle=`rgba(255,215,0,${0.4+Math.sin(bobAnim*4)*0.3})`;cx.lineWidth=2;
+      cx.beginPath();cx.arc(bobX,by,12,0,Math.PI*2);cx.stroke();
+    }
+  }
+
+  // AIM CIRCLE (follows mouse over water)
+  if(gst==='idle'&&aimY>wt){
+    cx.strokeStyle='rgba(255,215,0,0.35)';cx.lineWidth=1.5;cx.setLineDash([4,4]);
+    cx.beginPath();cx.arc(aimX,aimY,16,0,Math.PI*2);cx.stroke();
+    cx.setLineDash([]);
+    // aim line from rod
+    cx.strokeStyle='rgba(255,215,0,0.15)';cx.lineWidth=1;
+    cx.beginPath();cx.moveTo(rodTip.x,rodTip.y);cx.lineTo(aimX,aimY);cx.stroke();
+  }
+
+  // PARTICLES
+  particles.forEach(p=>{
+    cx.globalAlpha=p.life/60*0.85;cx.fillStyle=p.color;
+    cx.fillRect(p.x-p.sz/2,p.y-p.sz/2,p.sz,p.sz);
+  });
+  cx.globalAlpha=1;
+
+  // IDLE LABEL
+  if(gst==='idle'&&!bobLanded){
+    cx.fillStyle='rgba(0,0,0,.6)';cx.fillRect(W/2-140,wt+10,280,22);
+    cx.fillStyle='#ffd700';cx.font=`${Math.max(6,W*.009)}px 'Press Start 2P'`;cx.textAlign='center';
+    cx.fillText('CLICK ON A FISH TO CAST!',W/2,wt+25);
+  }
+
+  // COUNTDOWN WARNING (last 10 seconds)
+  if(t<=10&&t>0){
+    cx.globalAlpha=0.15+Math.sin(Date.now()/200)*0.1;
+    cx.fillStyle='#ef5350';
+    cx.fillRect(0,0,W,H);
+    cx.globalAlpha=1;
+    cx.fillStyle=t<=5?'#ef5350':'#ffd700';
+    cx.font=`${Math.max(20,W*0.06)}px 'Press Start 2P'`;
+    cx.textAlign='center';
+    cx.fillText(t,W/2,H/2);
+  }
+
+  // LOCATION
+  cx.fillStyle='rgba(255,255,255,0.25)';cx.font=`${Math.max(5,W*.008)}px 'Press Start 2P'`;cx.textAlign='left';
+  cx.fillText(LOCS[Math.min(lvl-1,3)].name,8,H-7);
+}
+
+function updateHUD(){
+  document.getElementById('hL').textContent=lvl;
+  document.getElementById('hS').textContent=score;
+  document.getElementById('hC').textContent=catches;
+  document.getElementById('hT').textContent=t;
+}
+
+function endGame(){
+  clearInterval(tInt);gst='gameover';
+  document.getElementById('hud').style.display='none';
+  document.getElementById('reelWrap').style.display='none';
+  document.getElementById('hint').style.display='none';
+  document.getElementById('goSc').textContent='SCORE: '+score;
+  document.getElementById('goSub').textContent=catches+' caught · Level '+lvl+' · '+pName;
+  document.getElementById('scO').classList.remove('h');
+}
+function restart(){document.getElementById('scO').classList.add('h');startGame();}
+
+// INV
+function openInv(){
+  const p=document.getElementById('invP');
+  if(p.style.display==='block'){p.style.display='none';return;}
+  const keys=Object.keys(inventory);
+  const g=document.getElementById('invG');
+  if(!keys.length){g.innerHTML='<div style="font-size:7px;color:#446;text-align:center;padding:20px;grid-column:1/-1">Bag empty!<br><br>Aim for those fish! 🎣</div>';p.style.display='block';return;}
+  g.innerHTML=keys.map(id=>{
+    const f=FISH.find(f=>f.id===id);
+    return`<div class="ic"><canvas width="42" height="42" style="image-rendering:pixelated" id="sp_${id}"></canvas><div class="nm">${f?f.n:id}</div><div class="ct">x${inventory[id]}</div></div>`;
+  }).join('');
+  p.style.display='block';
+  keys.forEach(id=>{
+    const el=document.getElementById('sp_'+id);
+    if(el){const ctx2=el.getContext('2d');drawSp(ctx2,id,0,0,42/7,42/7);}
+  });
+}
+function closeInv(){document.getElementById('invP').style.display='none';}
+function toggleInv(){openInv();}
+function openLB(){document.getElementById('lbP').style.display='block';renderLB();}
+function closeLB(){document.getElementById('lbP').style.display='none';}
+function renderLB(){
+  const sc=JSON.parse(localStorage.getItem('gf_lb_v3')||'[]');
+  const l=document.getElementById('lbL');
+  if(!sc.length){l.innerHTML='<div style="font-size:7px;color:#446;text-align:center;padding:20px">No scores yet!<br>Be the first angler!</div>';return;}
+  const m=['🥇','🥈','🥉'];
+  l.innerHTML=sc.slice(0,12).map((s,i)=>`<div class="lr"><div class="lrk">${m[i]||i+1}</div><div class="lnm">${s.name}</div><div class="lsc">${s.score}</div></div>`).join('');
+}
+function saveScore(){
+  const sc=JSON.parse(localStorage.getItem('gf_lb_v3')||'[]');
+  sc.push({name:pName,score,catches,lvl,date:new Date().toLocaleDateString()});
+  sc.sort((a,b)=>b.score-a.score);
+  localStorage.setItem('gf_lb_v3',JSON.stringify(sc.slice(0,20)));
+  openLB();document.getElementById('scO').classList.add('h');
+}
+
+// initial bg
+resize();cx.fillStyle='#0a1628';cx.fillRect(0,0,W,H);
+</script>
+</body>
+</html>
