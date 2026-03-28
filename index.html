@@ -246,9 +246,9 @@ async function sendMsg(){
   history.push({role:'user',content:txt});
   showTyping();
   try{
-    var res=await fetch('https://api.anthropic.com/v1/messages',{
+    var res=await fetch('https://petegpt-proxy.petercwong.workers.dev',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':'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','anthropic-version':'2023-06-01'},
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
