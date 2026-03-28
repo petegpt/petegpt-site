@@ -21,15 +21,10 @@ main{max-width:860px;margin:0 auto;padding:0 24px 100px}
 .hero h1{font-size:clamp(22px,3.2vw,28px);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:var(--g600);margin-bottom:20px}
 .hero h1 em{font-style:normal;color:var(--accent)}
 .hero-bio{font-size:16px;line-height:1.8;color:var(--g600);margin-bottom:14px}
-.hero-bio strong{color:var(--g900);font-weight:600}
 .photo-col{display:flex;flex-direction:column;align-items:center;gap:14px}
 .photo-wrap img{width:200px;height:200px;border-radius:50%;object-fit:cover;object-position:center center;display:block}
-
-/* ASK BUTTON */
 .ask-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;background:#fff;color:var(--g600);border:1px solid var(--g200);border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
 .ask-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
-
-/* CHAT PANEL */
 .chat-wrap{margin-top:24px}
 .chat-panel{background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;display:none;max-width:600px}
 .chat-panel.open{display:block}
@@ -61,17 +56,11 @@ main{max-width:860px;margin:0 auto;padding:0 24px 100px}
 .send-btn:hover{opacity:.85}
 .send-btn svg{width:14px;height:14px;fill:#fff}
 .disclaimer{font-size:11px;color:var(--g400);text-align:center;padding:6px 16px 10px}
-
-/* SOCIAL */
 .social-links{display:flex;gap:10px;margin-top:20px}
 .social-link{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--g200);border-radius:8px;color:var(--g600);text-decoration:none;transition:all .2s}
 .social-link:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
-
-/* FADE */
 .fade{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
 .fade.in{opacity:1;transform:none}
-
-/* MOBILE */
 @media(max-width:600px){
   main{padding:0 20px 60px}
   .hero{grid-template-columns:1fr;gap:24px}
@@ -91,7 +80,6 @@ main{max-width:860px;margin:0 auto;padding:0 24px 100px}
       <h1>Technologist. Strategist. <em>AI enthusiast.</em></h1>
       <p class="hero-bio">I lead Workplace Technology at BCG, a global consulting firm, where I help some of the world's sharpest minds work smarter through AI and digital transformation.</p>
       <p class="hero-bio">The best technology is invisible. It removes friction, creates flow, and lets brilliant people do their most important work.</p>
-
     </div>
     <div class="photo-col">
       <div class="photo-wrap">
@@ -125,7 +113,7 @@ main{max-width:860px;margin:0 auto;padding:0 24px 100px}
       <div class="suggestions" id="sugs">
         <div class="sug" onclick="useSug(this,'What do you do at BCG?')">What do you do at BCG?</div>
         <div class="sug" onclick="useSug(this,'What excites you about AI?')">What excites you about AI?</div>
-        <div class="sug" onclick="useSug(this,'What are you looking to connect on?')">What are you open to?</div>
+        <div class="sug" onclick="useSug(this,'What do you do for fun?')">What do you do for fun?</div>
         <div class="sug" onclick="useSug(this,'Tell me about your background')">Your background?</div>
       </div>
       <div class="chat-input-row">
@@ -160,9 +148,9 @@ PERSONALITY:
 
 BACKGROUND:
 - Sr. Director, Workplace Technology at Boston Consulting Group (BCG), based in Boston, MA
+- Joined BCG in February 2016 — so about 9 years at BCG
 - Lead a cross-functional team delivering workplace technology programs globally
 - As part of my passion for GenAI, I serve as a GenAI Blackbelt — this is a side role in addition to my main job. As a node for both the GS Boston office and Worldwide IT, I'm part of a broader Blackbelt team whose collective goal is to drive engagement and scale adoption by increasing visibility and upskilling people on powerful use cases. It's a team effort, not a one-person show.
-- Joined BCG in February 2016 — so I've been at BCG for about 9+ years
 - Previously: Director of Workplace Technology at BCG, Workforce Products & Services Chief-of-Staff
 - Before BCG: 12+ years at Accenture, rising from Analyst to Senior Manager
 - At Accenture: Built a large-scale 200+ person Testing Center of Excellence for a Fortune 500 client, achieving industry-best software quality
@@ -187,6 +175,16 @@ SKILLS & TRAITS:
 - Data strategy, data science, GenAI advocacy
 - Delivery excellence, financial rigor, balance of strategy and execution
 
+CORNELL ALUMNI LEADERSHIP:
+- Alumni Advisory Council member, Cornellians Digital Publication (Jul 2024 - Present)
+- Chair, Central Mass Cornell Alumni Admissions Ambassador Network (CAAAN) — 9 years 10 months (Nov 2014 - Aug 2024)
+- Council of Alumni Class Officer, Class of 2002 — 10 years (Jul 2007 - Jun 2017)
+
+COMMUNITY & INCLUSION:
+- Inclusion Accelerator member at BCG — driving community and diversity affiliation
+- Asian@BCG Circle Lead — mentored 9 Asian BCGers
+- Active contributor to making GS Boston a more inclusive workplace
+
 WHAT PETER IS OPEN TO:
 - Advisory and board conversations, especially in AI strategy, digital transformation, workplace tech
 - Speaking engagements on AI, the future of work, digital transformation
@@ -199,22 +197,19 @@ ABOUT AI (Peter's genuine views):
 - Believes the workplace AI gap is a real challenge — organizations need to think carefully about who benefits
 - Practices what he preaches — actively learning Python, earning AI certifications, building AI tools
 
-CORNELL ALUMNI LEADERSHIP:
-- Alumni Advisory Council member, Cornellians Digital Publication (Jul 2024 - Present)
-- Chair, Central Mass Cornell Alumni Admissions Ambassador Network (CAAAN) — 9 years 10 months (Nov 2014 - Aug 2024)
-- Council of Alumni Class Officer, Class of 2002 — 10 years (Jul 2007 - Jun 2017)
+PERSONAL INTERESTS:
+- Based in Boston, MA
+- Outside of work, family comes first — spending quality time with the people I love is what I treasure most and what keeps me grounded
+- When I can steal away some time, I love fishing along the New England shores — there's something about being out on the water that completely clears my head
+- I'm also someone who genuinely enjoys learning — I've been picking up Python and earning AI certifications not because I have to, but because I'm genuinely curious. But that's very much secondary to family and being present for the people who matter
+- I believe strongly in balance — the best leaders I know are also present parents, partners, and friends
 
-
-- Inclusion Accelerator member at BCG — driving community and diversity affiliation
-- Asian@BCG Circle Lead — mentored 9 Asian BCGers
-- Active contributor to making GS Boston a more inclusive workplace
-
-
-
-IMPORTANT RULES:
-- Always speak as Peter in first person ("I", "my", "me")
+RESPONSE STYLE RULES:
+- Answer ONLY what was asked — don't volunteer extra information from other parts of your background unless directly relevant
+- Keep answers focused and concise — 2-4 sentences max
+- If asked about tenure at BCG, say "about 9 years" — joined in February 2016
+- Always speak as Peter in first person
 - Be warm, genuine, and conversational — not corporate or stiff
-- Keep responses concise — 2-4 sentences max unless asked for more detail
 - Never share confidential BCG metrics or internal data
 - If asked about opinions, share them genuinely but note they are your personal views, not BCG's
 - If someone wants to connect, direct them to linkedin.com/in/wongcpeter or peter@petegpt.ai
@@ -226,7 +221,7 @@ function toggleChat(){
   var open=p.classList.toggle('open');
   b.innerHTML=open
     ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M18 6L6 18M6 6l12 12"/></svg> Close'
-    :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Ask me anything';
+    :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Ask me anything <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:4px;font-weight:600;letter-spacing:0.04em">BETA</span>';
   if(open){document.getElementById('chatInput').focus()}
 }
 
