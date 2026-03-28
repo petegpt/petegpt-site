@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How AI-Ready Are You?</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafaf8;--white:#fff;--g100:#f4f4f1;--g200:#e5e5e0;--g400:#9a9a94;--g600:#585852;--g900:#141412;
+  --accent:#16a34a;--accent-l:#f0fdf4;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--g900);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;-webkit-font-smoothing:antialiased}
+.card{background:var(--white);border:1px solid var(--g200);border-radius:16px;padding:36px;max-width:580px;width:100%;box-shadow:0 4px 32px rgba(0,0,0,0.06)}
+
+/* INTRO */
+.intro-eyebrow{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.intro h1{font-size:clamp(22px,4vw,32px);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:var(--g900);margin-bottom:12px}
+.intro p{font-size:15px;color:var(--g600);line-height:1.7;margin-bottom:8px}
+.intro-meta{font-size:12px;color:var(--g400);margin-bottom:28px;display:flex;gap:16px}
+.intro-meta span{display:flex;align-items:center;gap:4px}
+.start-btn{width:100%;padding:14px;background:var(--g900);color:var(--white);border:none;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--font);transition:opacity .2s}
+.start-btn:hover{opacity:.85}
+
+/* PROGRESS */
+.progress-wrap{margin-bottom:28px}
+.progress-top{display:flex;justify-content:space-between;font-size:12px;color:var(--g400);margin-bottom:8px}
+.progress-bar{height:4px;background:var(--g200);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease}
+
+/* QUESTION */
+.q-number{font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.q-text{font-size:clamp(16px,2.5vw,20px);font-weight:700;letter-spacing:-0.02em;line-height:1.3;color:var(--g900);margin-bottom:24px}
+
+/* OPTIONS */
+.options{display:flex;flex-direction:column;gap:10px}
+.opt{padding:14px 18px;border:1.5px solid var(--g200);border-radius:10px;cursor:pointer;font-size:14px;color:var(--g600);background:var(--white);text-align:left;font-family:var(--font);transition:all .15s;display:flex;align-items:center;gap:12px}
+.opt:hover{border-color:var(--g900);color:var(--g900);background:var(--g100)}
+.opt.selected{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
+.opt-letter{width:24px;height:24px;border-radius:50%;background:var(--g100);border:1.5px solid var(--g200);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--g400);flex-shrink:0;transition:all .15s}
+.opt.selected .opt-letter{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* NEXT BUTTON */
+.next-btn{width:100%;padding:13px;background:var(--g900);color:var(--white);border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);margin-top:20px;transition:opacity .2s;display:none}
+.next-btn:hover{opacity:.85}
+.next-btn.show{display:block}
+
+/* RESULT */
+.result{text-align:center}
+.result-emoji{font-size:64px;margin-bottom:16px;display:block}
+.result-tier{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px}
+.result h2{font-size:clamp(22px,4vw,30px);font-weight:700;letter-spacing:-0.03em;color:var(--g900);margin-bottom:12px}
+.result-score{display:inline-block;font-size:13px;font-weight:600;padding:4px 14px;border-radius:20px;margin-bottom:20px}
+.result p{font-size:15px;color:var(--g600);line-height:1.75;margin-bottom:24px;text-align:left}
+.result-tips{background:var(--g100);border-radius:10px;padding:18px;margin-bottom:24px;text-align:left}
+.result-tips h3{font-size:13px;font-weight:700;color:var(--g900);margin-bottom:12px}
+.tip{font-size:13px;color:var(--g600);line-height:1.6;padding:6px 0;border-bottom:1px solid var(--g200);display:flex;gap:8px}
+.tip:last-child{border-bottom:none}
+.tip-icon{flex-shrink:0}
+.result-actions{display:flex;gap:10px}
+.btn-primary{flex:1;padding:12px;background:var(--g900);color:var(--white);border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:opacity .2s}
+.btn-primary:hover{opacity:.85}
+.btn-ghost{flex:1;padding:12px;background:var(--white);color:var(--g900);border:1.5px solid var(--g200);border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all .2s}
+.btn-ghost:hover{border-color:var(--g900)}
+.footer-note{font-size:11px;color:var(--g400);text-align:center;margin-top:16px}
+.footer-note a{color:var(--g400)}
+
+/* SCORE BAR */
+.score-bars{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;text-align:left}
+.score-row{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--g600)}
+.score-label{width:90px;flex-shrink:0}
+.score-track{flex:1;height:6px;background:var(--g200);border-radius:3px;overflow:hidden}
+.score-bar-fill{height:100%;border-radius:3px;transition:width .8s ease}
+</style>
+</head>
+<body>
+<div class="card" id="card">
+
+  <!-- INTRO -->
+  <div id="intro">
+    <div class="intro-eyebrow">Free Assessment · No signup</div>
+    <h1>How AI-Ready Are You?</h1>
+    <p>10 quick questions to assess where you stand on the AI adoption curve — and what to do next.</p>
+    <div class="intro-meta">
+      <span>⏱ ~2 minutes</span>
+      <span>📊 10 questions</span>
+      <span>🎯 Instant results</span>
+    </div>
+    <button class="start-btn" onclick="startQuiz()">Start the assessment →</button>
+    <div class="footer-note" style="margin-top:16px">Built by Peter · <a href="/">petegpt.ai</a></div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" style="display:none">
+    <div class="progress-wrap">
+      <div class="progress-top">
+        <span id="qNum">Question 1 of 10</span>
+        <span id="qPct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    </div>
+    <div class="q-number" id="qNumber">Question 1</div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="options"></div>
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Next →</button>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result" style="display:none"></div>
+
+</div>
+
+<script>
+const QUESTIONS=[
+  {
+    q:"How often do you use AI tools in your work?",
+    opts:["I haven't tried any yet","Occasionally — a few times a month","Regularly — a few times a week","Daily — it's part of my workflow"],
+    scores:[0,1,2,3]
+  },
+  {
+    q:"When AI gives you an output, you typically...",
+    opts:["Don't use AI outputs in my work","Use it as-is without much review","Review it and edit before using","Critically evaluate it and verify key facts"],
+    scores:[0,1,2,3]
+  },
+  {
+    q:"How would you describe your understanding of how AI works?",
+    opts:["It's basically magic to me","I understand the basics conceptually","I understand LLMs, prompting, and limitations","I can explain transformers, embeddings, and RAG"],
+    scores:[0,1,2,3]
+  },
+  {
+    q:"How does your organization approach AI adoption?",
+    opts:["No real strategy yet","We're exploring and running pilots","We have a strategy and are scaling","We're leading AI adoption in our industry"],
+    scores:[0,1,2,3]
+  },
+  {
+    q:"When you hit a new problem at work, you...",
+    opts:["Never think to use AI","Occasionally wonder if AI could help","Often consider which AI tool fits best","Instinctively reach for AI as a first step"],
+    scores:[0,1,2,3]
+  },
+  {
+    q:"How do you feel about AI's impact on your job?",
+    opts:["Concerned it could replace my role","Unsure — still figuring it out","Optimistic — it amplifies what I do","Excited — I'm actively shaping how it's used"],
+    scores:[0,1,2,3]
+  },
+  {
+    q:"How often do you share AI tips or tools with colleagues?",
+    opts:["Never — I'm still learning myself","Rarely — when someone asks","Sometimes — I forward interesting things","Regularly — I actively champion AI adoption"],
+    scores:[0,1,2,3]
+  },
+  {
+    q:"Your approach to AI ethics and responsible use is...",
+    opts:["Haven't thought much about it","I'm aware it's important but not sure how","I consider bias and privacy in my AI use","I actively advocate for responsible AI practices"],
+    scores:[0,1,2,3]
+  },
+  {
+    q:"How would you rate your AI prompting skills?",
+    opts:["I just type questions like Google","I write basic prompts and get basic results","I use techniques like role-setting and examples","I craft sophisticated prompts with clear structure and context"],
+    scores:[0,1,2,3]
+  },
+  {
+    q:"In 2 years, AI will have...",
+    opts:["Minimal impact on how I work","Changed some of my tasks","Transformed most of my workflow","Created entirely new opportunities I'm already preparing for"],
+    scores:[0,1,2,3]
+  },
+];
+
+const TIERS=[
+  {
+    min:0,max:9,
+    emoji:'🌱',
+    tier:'The Skeptic',
+    color:'#64748b',
+    bgColor:'#f1f5f9',
+    h2:'You\'re at the starting line.',
+    desc:'AI is on your radar, but it hasn\'t made it into your daily workflow yet — and that\'s okay. The best time to start is now, before the gap between AI-fluent and AI-unfamiliar professionals widens further. The good news: the tools are more accessible than ever.',
+    tips:[
+      {icon:'🎯',text:'Start with one tool — try Claude or ChatGPT for just one task this week'},
+      {icon:'📖',text:'Spend 15 minutes reading about how large language models work'},
+      {icon:'💬',text:'Ask a colleague who uses AI to show you their workflow'},
+      {icon:'🔍',text:'Identify one repetitive task in your work that AI could help with'},
+    ]
+  },
+  {
+    min:10,max:17,
+    emoji:'🔍',
+    tier:'The Explorer',
+    color:'#d97706',
+    bgColor:'#fef3c7',
+    h2:'You\'re experimenting — keep going.',
+    desc:'You\'ve dipped your toes in and see the potential, but AI isn\'t yet a consistent part of how you work. This is the most important stage — the habits you build now will compound over time. The difference between an Explorer and a Practitioner is consistency.',
+    tips:[
+      {icon:'⚡',text:'Commit to using AI for at least one task every single workday'},
+      {icon:'✍️',text:'Learn structured prompting — try role, context, task, format'},
+      {icon:'🤝',text:'Find an AI accountability partner at work to share learnings'},
+      {icon:'📊',text:'Track which AI tasks save you the most time this month'},
+    ]
+  },
+  {
+    min:18,max:24,
+    emoji:'⚡',
+    tier:'The Practitioner',
+    color:'#2563eb',
+    bgColor:'#dbeafe',
+    h2:'You\'re using AI effectively.',
+    desc:'AI is genuinely part of how you work, and you understand both its power and its limits. You\'re ahead of most professionals. The next step is moving from personal productivity to organizational impact — helping others around you level up.',
+    tips:[
+      {icon:'🏗️',text:'Build a personal prompt library for your most common work tasks'},
+      {icon:'👥',text:'Run an informal AI demo or lunch-and-learn for your team'},
+      {icon:'🔬',text:'Explore agentic AI and multi-step workflows'},
+      {icon:'🌐',text:'Contribute to your organization\'s AI strategy conversations'},
+    ]
+  },
+  {
+    min:25,max:30,
+    emoji:'🚀',
+    tier:'The Visionary',
+    color:'#16a34a',
+    bgColor:'#dcfce7',
+    h2:'You\'re ahead of the curve.',
+    desc:'You don\'t just use AI — you think in terms of AI systems, organizational change, and what\'s coming next. You\'re the person others look to when they want to understand where AI is headed. Your job now is to bring people along with you.',
+    tips:[
+      {icon:'🎤',text:'Share your AI knowledge — speak, write, or mentor others'},
+      {icon:'🔭',text:'Explore emerging areas: agents, MCP, multi-modal AI'},
+      {icon:'⚖️',text:'Champion responsible AI frameworks in your organization'},
+      {icon:'🤝',text:'Connect with other Visionaries — your network compounds your impact'},
+    ]
+  },
+];
+
+let current=0,answers=[],totalScore=0;
+
+function startQuiz(){
+  document.getElementById('intro').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q=QUESTIONS[current];
+  const pct=Math.round(current/QUESTIONS.length*100);
+  document.getElementById('qNum').textContent=`Question ${current+1} of ${QUESTIONS.length}`;
+  document.getElementById('qPct').textContent=pct+'%';
+  document.getElementById('progressFill').style.width=pct+'%';
+  document.getElementById('qNumber').textContent=`Question ${current+1}`;
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('nextBtn').classList.remove('show');
+
+  const letters=['A','B','C','D'];
+  const opts=document.getElementById('options');
+  opts.innerHTML='';
+  q.opts.forEach((opt,i)=>{
+    const btn=document.createElement('button');
+    btn.className='opt';
+    btn.innerHTML=`<span class="opt-letter">${letters[i]}</span>${opt}`;
+    btn.onclick=()=>selectOpt(i,btn);
+    opts.appendChild(btn);
+  });
+}
+
+function selectOpt(idx,btn){
+  document.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+  btn.classList.add('selected');
+  answers[current]=QUESTIONS[current].scores[idx];
+  document.getElementById('nextBtn').classList.add('show');
+  document.getElementById('nextBtn').textContent=current===QUESTIONS.length-1?'See my results →':'Next →';
+}
+
+function nextQuestion(){
+  if(answers[current]===undefined)return;
+  current++;
+  if(current>=QUESTIONS.length){showResult();return;}
+  renderQuestion();
+}
+
+function showResult(){
+  totalScore=answers.reduce((a,b)=>a+b,0);
+  const tier=TIERS.find(t=>totalScore>=t.min&&totalScore<=t.max)||TIERS[0];
+  const pct=Math.round(totalScore/30*100);
+
+  // score breakdown
+  const categories=['Usage','Critical Thinking','Knowledge','Org Context','Instinct','Mindset','Sharing','Ethics','Prompting','Vision'];
+  const barsHtml=categories.map((cat,i)=>`
+    <div class="score-row">
+      <div class="score-label">${cat}</div>
+      <div class="score-track"><div class="score-bar-fill" style="width:${answers[i]/3*100}%;background:${tier.color}"></div></div>
+    </div>`).join('');
+
+  document.getElementById('quiz').style.display='none';
+  const res=document.getElementById('result');
+  res.style.display='block';
+  res.innerHTML=`
+    <div class="result">
+      <span class="result-emoji">${tier.emoji}</span>
+      <div class="result-tier" style="color:${tier.color}">${tier.tier}</div>
+      <h2>${tier.h2}</h2>
+      <span class="result-score" style="background:${tier.bgColor};color:${tier.color}">Score: ${totalScore}/30 · Top ${100-pct}% AI-ready</span>
+      <p>${tier.desc}</p>
+      <div class="score-bars">${barsHtml}</div>
+      <div class="result-tips">
+        <h3>Your next moves</h3>
+        ${tier.tips.map(t=>`<div class="tip"><span class="tip-icon">${t.icon}</span>${t.text}</div>`).join('')}
+      </div>
+      <div class="result-actions">
+        <button class="btn-primary" onclick="retake()">Retake quiz</button>
+        <button class="btn-ghost" onclick="window.open('https://petegpt.ai','_blank')">Visit petegpt.ai</button>
+      </div>
+      <div class="footer-note" style="margin-top:16px">Built by Peter · <a href="/">petegpt.ai</a> · Share your result with a colleague!</div>
+    </div>`;
+
+  // animate bars
+  setTimeout(()=>{
+    document.querySelectorAll('.score-bar-fill').forEach((b,i)=>{
+      b.style.transition=`width ${0.5+i*0.05}s ease`;
+    });
+  },100);
+}
+
+function retake(){
+  current=0;answers=[];totalScore=0;
+  document.getElementById('result').style.display='none';
+  document.getElementById('quiz').style.display='block';
+  renderQuestion();
+}
+</script>
+</body>
+</html>
