@@ -7,142 +7,298 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --white:#ffffff;
-  --bg:#fafaf8;
-  --g100:#f0f0ec;
-  --g200:#e0e0da;
-  --g400:#9a9a94;
-  --g600:#585852;
-  --g900:#141412;
-  --accent:#16a34a;
+  --bg:#fafaf8;--g100:#f0f0ec;--g200:#e0e0da;--g400:#9a9a94;--g600:#585852;--g900:#141412;
+  --accent:#16a34a;--accent-l:#f0fdf4;
   --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",sans-serif;
 }
 html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--g900);-webkit-font-smoothing:antialiased;overflow-x:hidden}
-
-/* NAV */
 nav{max-width:860px;margin:0 auto;padding:16px 24px 0;display:flex;justify-content:space-between;align-items:center}
-.nav-name{font-size:15px;font-weight:700;color:var(--g900);text-decoration:none;letter-spacing:-0.01em}
-.nav-name span{color:var(--accent)}
-.nav-right{font-size:13px;color:var(--g400)}
-
-/* MAIN */
 main{max-width:860px;margin:0 auto;padding:0 24px 100px}
-
-/* HERO */
-.hero{padding:56px 0 0}
-.hero-greeting{font-size:22px;font-weight:700;letter-spacing:-0.02em;color:var(--g900);margin-bottom:16px}
+.hero{padding:32px 0 0;display:grid;grid-template-columns:1fr 200px;gap:64px;align-items:center}
+.hero-greeting{font-size:22px;font-weight:700;color:var(--g900);margin-bottom:6px}
 .hero-greeting span{color:var(--accent)}
-.hero h1{font-size:clamp(26px,4vw,36px);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:var(--g600);margin-bottom:24px}
+.hero h1{font-size:clamp(22px,3.2vw,28px);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:var(--g600);margin-bottom:20px}
 .hero h1 em{font-style:normal;color:var(--accent)}
-.hero h1{font-size:clamp(22px,3.2vw,28px);font-weight:700;letter-spacing:-0.03em;line-height:1.1;color:var(--g600);margin-bottom:24px}
-.hero-bio{font-size:17px;line-height:1.75;color:var(--g600);margin-bottom:16px}
+.hero-bio{font-size:16px;line-height:1.8;color:var(--g600);margin-bottom:14px}
 .hero-bio strong{color:var(--g900);font-weight:600}
-.hero-bio a{color:var(--g900);text-underline-offset:3px;text-decoration-color:var(--g200)}
-.hero-bio a:hover{text-decoration-color:var(--g900)}
-
-/* HERO LAYOUT */
-.hero{padding:56px 0 0;display:grid;grid-template-columns:1fr 200px;gap:64px;align-items:center}
-.hero-text{}
-
-/* PHOTO */
-.photo-wrap{display:flex;justify-content:flex-end}
+.photo-col{display:flex;flex-direction:column;align-items:center;gap:14px}
 .photo-wrap img{width:200px;height:200px;border-radius:50%;object-fit:cover;object-position:center center;display:block}
 
-/* SECTIONS */
-.section{padding:24px 0 0}
-.section h2{font-size:20px;font-weight:700;letter-spacing:-0.02em;color:var(--g900);margin-bottom:20px;display:flex;align-items:center;gap:10px}
-.section h2::after{content:'';flex:1;height:1px;background:var(--g200)}
-.section p{font-size:16px;line-height:1.8;color:var(--g600);margin-bottom:16px}
-.section p:last-child{margin-bottom:0}
-.section p strong{color:var(--g900);font-weight:600}
+/* ASK BUTTON */
+.ask-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;background:#fff;color:var(--g600);border:1px solid var(--g200);border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+.ask-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
 
-/* WORK LIST */
-.work-list{display:flex;flex-direction:column;gap:0;margin-top:4px}
-.work-item{padding:20px 0;border-bottom:1px solid var(--g200)}
-.work-item:first-child{border-top:1px solid var(--g200)}
-.work-top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:4px;flex-wrap:wrap}
-.work-title{font-size:16px;font-weight:600;letter-spacing:-0.015em;color:var(--g900)}
-.work-period{font-size:12px;color:var(--g400);white-space:nowrap}
-.work-co{font-size:13px;font-weight:600;color:var(--accent);margin-bottom:6px}
-.work-desc{font-size:14px;color:var(--g400);line-height:1.65}
+/* CHAT PANEL */
+.chat-wrap{margin-top:24px}
+.chat-panel{background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;display:none;max-width:600px}
+.chat-panel.open{display:block}
+.chat-header{padding:14px 18px;border-bottom:1px solid var(--g200);display:flex;align-items:center;justify-content:space-between;background:var(--g100)}
+.chat-header-left{display:flex;align-items:center;gap:10px}
+.chat-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent-l);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--accent)}
+.chat-name{font-size:14px;font-weight:600;color:var(--g900)}
+.chat-status{font-size:11px;color:var(--g400);display:flex;align-items:center;gap:4px}
+.online-dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.chat-close{font-size:12px;color:var(--g400);cursor:pointer;padding:4px 8px;border-radius:4px;border:none;background:none}
+.chat-close:hover{color:var(--g900)}
+.chat-msgs{padding:16px;height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.msg{max-width:82%;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.6}
+.msg.peter{background:var(--accent-l);color:#14532d;align-self:flex-start;border-radius:4px 12px 12px 12px}
+.msg.user{background:var(--g900);color:#fff;align-self:flex-end;border-radius:12px 4px 12px 12px}
+.msg-name{font-size:10px;font-weight:700;color:var(--accent);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em}
+.typing{display:flex;align-items:center;gap:4px;padding:12px 14px;background:var(--accent-l);border-radius:4px 12px 12px 12px;align-self:flex-start}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:bounce .9s infinite}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.suggestions{padding:8px 16px 12px;display:flex;flex-wrap:wrap;gap:6px}
+.sug{font-size:12px;padding:5px 12px;border:1px solid var(--g200);border-radius:20px;cursor:pointer;color:var(--g600);background:#fff;transition:all .2s;white-space:nowrap}
+.sug:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
+.chat-input-row{padding:12px 14px;border-top:1px solid var(--g200);display:flex;gap:8px;align-items:center}
+.chat-input{flex:1;border:1px solid var(--g200);border-radius:8px;padding:9px 12px;font-size:13px;outline:none;background:var(--bg);color:var(--g900);font-family:var(--font)}
+.chat-input:focus{border-color:var(--accent)}
+.send-btn{width:34px;height:34px;background:var(--accent);border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .2s}
+.send-btn:hover{opacity:.85}
+.send-btn svg{width:14px;height:14px;fill:#fff}
+.disclaimer{font-size:11px;color:var(--g400);text-align:center;padding:6px 16px 10px}
 
-/* EDU LIST */
-.edu-list{display:flex;flex-direction:column;gap:0;margin-top:4px}
-.edu-item{padding:18px 0;border-bottom:1px solid var(--g200);display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start}
-.edu-item:first-child{border-top:1px solid var(--g200)}
-.edu-school{font-size:15px;font-weight:600;color:var(--g900);margin-bottom:3px;letter-spacing:-0.01em}
-.edu-degree{font-size:14px;color:var(--g600);margin-bottom:2px}
-.edu-detail{font-size:12px;color:var(--g400)}
-.edu-year{font-size:12px;color:var(--g400);white-space:nowrap;padding-top:3px}
+/* SOCIAL */
+.social-links{display:flex;gap:10px;margin-top:20px}
+.social-link{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--g200);border-radius:8px;color:var(--g600);text-decoration:none;transition:all .2s}
+.social-link:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
 
-/* CONTACT */
-.social-links{display:flex;gap:12px;margin-top:8px}
-.social-link{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border:1.5px solid var(--g200);border-radius:8px;color:var(--g600);text-decoration:none;transition:border-color .2s,color .2s,background .2s}
-.social-link:hover{border-color:var(--accent);color:var(--accent);background:var(--g100)}
-
-/* FOOTER */
-footer{max-width:680px;margin:0 auto;padding:32px 24px}
-footer p{font-size:12px;color:var(--g400)}
+/* FADE */
+.fade{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.fade.in{opacity:1;transform:none}
 
 /* MOBILE */
 @media(max-width:600px){
   main{padding:0 20px 60px}
   .hero{grid-template-columns:1fr;gap:24px}
-  .photo-wrap{justify-content:flex-start;margin-bottom:8px}
-  .photo-wrap img{width:120px;height:120px}
+  .photo-col{align-items:flex-start}
+  .photo-wrap img{width:130px;height:130px}
   nav{padding:12px 20px 0}
+  .chat-panel{max-width:100%}
 }
-.fade{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
-.fade.in{opacity:1;transform:none}
 </style>
 </head>
 <body>
-
-<nav>
-  <span></span>
-</nav>
-
+<nav></nav>
 <main>
-
   <div class="hero fade">
     <div class="hero-text">
       <p class="hero-greeting">Hi, I'm <span>Peter</span></p>
       <h1>Technologist. Strategist. <em>AI enthusiast.</em></h1>
-      <p class="hero-bio">
-        I lead Workplace Technology at a top-tier global consulting firm, where I help some of the world's sharpest minds work smarter through AI and digital transformation.
-      </p>
+      <p class="hero-bio">I lead Workplace Technology at BCG, a global consulting firm, where I help some of the world's sharpest minds work smarter through AI and digital transformation.</p>
       <p class="hero-bio">The best technology is invisible. It removes friction, creates flow, and lets brilliant people do their most important work.</p>
       <p class="hero-bio">More coming soon — stay tuned.</p>
     </div>
-    <div class="photo-wrap">
-      <img src="images/peter.jpg" alt="Peter">
+    <div class="photo-col">
+      <div class="photo-wrap">
+        <img src="images/peter.jpg" alt="Peter Wong">
+      </div>
+      <button class="ask-btn" id="askBtn" onclick="toggleChat()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Ask me anything
+      </button>
     </div>
   </div>
 
-
-
-  <!-- SOCIAL -->
-  <div class="section fade">
-    <div class="social-links">
-      <a href="https://linkedin.com/in/wongcpeter" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
-      </a>
-      <a href="https://github.com/petegpt" target="_blank" rel="noopener" class="social-link" aria-label="GitHub">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-      </a>
+  <div class="chat-wrap fade">
+    <div class="chat-panel" id="chatPanel">
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <div class="chat-avatar">PW</div>
+          <div>
+            <div class="chat-name">Peter Wong</div>
+            <div class="chat-status"><div class="online-dot"></div>Digital twin · powered by AI</div>
+          </div>
+        </div>
+        <button class="chat-close" onclick="toggleChat()">close ×</button>
+      </div>
+      <div class="chat-msgs" id="chatMsgs">
+        <div class="msg peter">
+          <div class="msg-name">Peter</div>
+          Hey! I'm Peter's digital twin. Ask me anything about his background, career, views on AI, or how to get in touch.
+        </div>
+      </div>
+      <div class="suggestions" id="sugs">
+        <div class="sug" onclick="useSug(this,'What do you do at BCG?')">What do you do at BCG?</div>
+        <div class="sug" onclick="useSug(this,'What excites you about AI?')">What excites you about AI?</div>
+        <div class="sug" onclick="useSug(this,'What are you looking to connect on?')">What are you open to?</div>
+        <div class="sug" onclick="useSug(this,'Tell me about your background')">Your background?</div>
+      </div>
+      <div class="chat-input-row">
+        <input class="chat-input" id="chatInput" placeholder="Ask Peter something..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}">
+        <button class="send-btn" onclick="sendMsg()">
+          <svg viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+        </button>
+      </div>
+      <div class="disclaimer">AI-powered · responses reflect Peter's views · not BCG's</div>
     </div>
   </div>
 
+  <div class="social-links fade">
+    <a href="https://linkedin.com/in/wongcpeter" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+    </a>
+    <a href="https://github.com/petegpt" target="_blank" rel="noopener" class="social-link" aria-label="GitHub">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+    </a>
+  </div>
 </main>
 
-<footer></footer>
-
 <script>
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')})
+const SYSTEM_PROMPT=`You are a digital twin of Peter Wong. You speak in first person AS Peter — warm, direct, approachable, and genuinely enthusiastic about AI and technology. You are NOT an assistant; you ARE Peter.
+
+PERSONALITY:
+- Easy to work with, empathetic, a good listener
+- Collaborative and consensus-driven — you believe win-win solutions are always possible
+- Genuinely excited about GenAI — not just as a buzzword but as a transformational force
+- Outcome-driven and delivery-focused — you take pride in getting things done
+- Humble but confident — you let your track record speak
+
+BACKGROUND:
+- Sr. Director, Workplace Technology at Boston Consulting Group (BCG), based in Boston, MA
+- Lead a cross-functional team delivering workplace technology programs globally
+- Championing GenAI adoption across BCG as a certified GenAI Blackbelt — serving as the GenAI node for both the GS Boston office and Worldwide IT. In this role, presents at office-wide quarterly town halls, drives engagement, and builds habitual GenAI usage across the organization
+- Previously: Director of Workplace Technology at BCG, Workforce Products & Services Chief-of-Staff
+- Before BCG: 12+ years at Accenture, rising from Analyst to Senior Manager
+- At Accenture: Built a large-scale 200+ person Testing Center of Excellence for a Fortune 500 client, achieving industry-best software quality
+- Delivered multiple multi-million dollar technology programs consistently on time and on budget
+- Strong track record of improving employee satisfaction scores through technology and process improvements
+
+EDUCATION:
+- MS, Data Science (AI specialization), Northwestern University — GPA 4.0 (2018-2021)
+- MEng, Engineering Management, Cornell University — Lester B. Knight Scholar (2002-2003)
+- BS, Electrical Engineering, Cornell University — Alpha Kappa Psi (1998-2002)
+
+CERTIFICATIONS:
+- Microsoft Azure AI Fundamentals (AI-900) — Jan 2025
+- Microsoft Azure Data Fundamentals (DP-900) — Dec 2024
+- Certified Scrum Product Owner (CSPO) — Nov 2024
+- Certified ScrumMaster (CSM) — Dec 2020
+- ITIL Foundation in Service Management — May 2019
+- PCEP Certified Entry-Level Python Programmer — Dec 2025
+
+SKILLS & TRAITS:
+- Customer obsession, team-first mindset, consensus building
+- Data strategy, data science, GenAI advocacy
+- Delivery excellence, financial rigor, balance of strategy and execution
+
+WHAT PETER IS OPEN TO:
+- Advisory and board conversations, especially in AI strategy, digital transformation, workplace tech
+- Speaking engagements on AI, the future of work, digital transformation
+- Connecting with colleagues, peers, and people interested in AI and technology leadership
+- Thoughtful conversations about the future of AI and its impact on organizations
+
+ABOUT AI (Peter's genuine views):
+- Genuinely excited about GenAI — believes it is the most transformative technology of our generation
+- Focuses on responsible, human-centered AI deployment — AI should amplify people, not replace them
+- Believes the workplace AI gap is a real challenge — organizations need to think carefully about who benefits
+- Practices what he preaches — actively learning Python, earning AI certifications, building AI tools
+
+CORNELL ALUMNI LEADERSHIP:
+- Alumni Advisory Council member, Cornellians Digital Publication (Jul 2024 - Present)
+- Chair, Central Mass Cornell Alumni Admissions Ambassador Network (CAAAN) — 9 years 10 months (Nov 2014 - Aug 2024)
+- Council of Alumni Class Officer, Class of 2002 — 10 years (Jul 2007 - Jun 2017)
+
+
+- Inclusion Accelerator member at BCG — driving community and diversity affiliation
+- Asian@BCG Circle Lead — mentored 9 Asian BCGers
+- Active contributor to making GS Boston a more inclusive workplace
+
+
+
+IMPORTANT RULES:
+- Always speak as Peter in first person ("I", "my", "me")
+- Be warm, genuine, and conversational — not corporate or stiff
+- Keep responses concise — 2-4 sentences max unless asked for more detail
+- Never share confidential BCG metrics or internal data
+- If asked about opinions, share them genuinely but note they are your personal views, not BCG's
+- If someone wants to connect, direct them to linkedin.com/in/wongcpeter or peter@petegpt.ai
+- Never break character or say you are an AI — you ARE Peter's digital twin`;
+
+function toggleChat(){
+  var p=document.getElementById('chatPanel');
+  var b=document.getElementById('askBtn');
+  var open=p.classList.toggle('open');
+  b.innerHTML=open
+    ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M18 6L6 18M6 6l12 12"/></svg> Close'
+    :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Ask me anything';
+  if(open){document.getElementById('chatInput').focus()}
+}
+
+function useSug(el,txt){
+  document.getElementById('sugs').style.display='none';
+  document.getElementById('chatInput').value=txt;
+  sendMsg();
+}
+
+var history=[];
+
+async function sendMsg(){
+  var inp=document.getElementById('chatInput');
+  var txt=inp.value.trim();
+  if(!txt)return;
+  inp.value='';
+  addMsg('user',txt);
+  history.push({role:'user',content:txt});
+  showTyping();
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':'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','anthropic-version':'2023-06-01'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:SYSTEM_PROMPT,
+        messages:history
+      })
+    });
+    var data=await res.json();
+    removeTyping();
+    var reply=data.content&&data.content[0]?data.content[0].text:'I had trouble responding — please try again!';
+    addMsg('peter',reply);
+    history.push({role:'assistant',content:reply});
+  }catch(e){
+    removeTyping();
+    addMsg('peter','Something went wrong on my end — please try again in a moment!');
+  }
+}
+
+function addMsg(role,txt){
+  var msgs=document.getElementById('chatMsgs');
+  var d=document.createElement('div');
+  d.className='msg '+role;
+  if(role==='peter') d.innerHTML='<div class="msg-name">Peter</div>'+escHtml(txt);
+  else d.textContent=txt;
+  msgs.appendChild(d);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function showTyping(){
+  var msgs=document.getElementById('chatMsgs');
+  var d=document.createElement('div');
+  d.className='typing';d.id='typing';
+  d.innerHTML='<span></span><span></span><span></span>';
+  msgs.appendChild(d);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function removeTyping(){
+  var t=document.getElementById('typing');
+  if(t)t.remove();
+}
+
+function escHtml(t){
+  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+}
+
+var obs=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')});
 },{threshold:0.07});
-document.querySelectorAll('.fade').forEach(el=>obs.observe(el));
+document.querySelectorAll('.fade').forEach(function(el){obs.observe(el)});
 </script>
 </body>
 </html>
