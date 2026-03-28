@@ -52,7 +52,6 @@ h2{font-size:clamp(9px,2vw,15px);color:#64b5f6;margin-bottom:16px;line-height:1.
   <h1>🎣 GONE FISHIN'</h1>
   <h2>New England Edition</h2>
   <div class="sub">Spot the fish · Aim your cast · Reel 'em in!<br>4 locations · 13 species · Skill-based casting</div>
-  <input id="nIn" placeholder="Your name..." style="font-family:'Press Start 2P',monospace;font-size:9px;padding:9px 12px;background:#060d20;border:2px solid #ffd700;color:#fff;width:210px;margin-bottom:14px;text-align:center">
   <button class="btn y" onclick="startGame()">🎣 START FISHING</button>
   <button class="btn b" onclick="openLB()">🏆 LEADERBOARD</button>
   <div style="font-size:6px;color:#223;margin-top:10px">petegpt.ai · Built by Peter</div>
@@ -513,7 +512,7 @@ function checkLvl(){
 // ── MAIN LOOP ──────────────────────────────────────────────────────────────
 function startGame(){
   ac();
-  pName=document.getElementById('nIn').value.trim()||'Angler';
+  pName='Angler';
   score=0;catches=0;lvl=1;t=90;inventory={};
   gst='idle';tension=50;bobLanded=false;currentFish=null;castLine=null;
   particles=[];ripples=[];fishes=[];
