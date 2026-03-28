@@ -85,7 +85,14 @@ main{max-width:860px;margin:0 auto;padding:0 24px 100px}
 footer{max-width:680px;margin:0 auto;padding:32px 24px}
 footer p{font-size:12px;color:var(--g400)}
 
-/* FADE */
+/* MOBILE */
+@media(max-width:600px){
+  main{padding:0 20px 60px}
+  .hero{grid-template-columns:1fr;gap:24px}
+  .photo-wrap{justify-content:flex-start;margin-bottom:8px}
+  .photo-wrap img{width:120px;height:120px}
+  nav{padding:12px 20px 0}
+}
 .fade{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
 .fade.in{opacity:1;transform:none}
 </style>
