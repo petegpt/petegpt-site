@@ -15,8 +15,6 @@ html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--g900);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 nav{max-width:860px;margin:0 auto;padding:16px 24px 0}
 main{max-width:860px;margin:0 auto;padding:0 24px 100px}
-
-/* HERO */
 .hero{padding:32px 0 0;display:grid;grid-template-columns:1fr 200px;gap:64px;align-items:center}
 .hero-greeting{font-size:22px;font-weight:700;color:var(--g900);margin-bottom:6px}
 .hero-greeting span{color:var(--accent)}
@@ -25,12 +23,8 @@ main{max-width:860px;margin:0 auto;padding:0 24px 100px}
 .hero-bio{font-size:16px;line-height:1.8;color:var(--g600);margin-bottom:14px}
 .photo-col{display:flex;flex-direction:column;align-items:center;gap:14px}
 .photo-wrap img{width:200px;height:200px;border-radius:50%;object-fit:cover;object-position:center center;display:block}
-
-/* ASK BUTTON */
 .ask-btn{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;background:#fff;color:var(--g600);border:1px solid var(--g200);border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
 .ask-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
-
-/* CHAT */
 .chat-wrap{margin-top:24px}
 .chat-panel{background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden;display:none;max-width:600px}
 .chat-panel.open{display:block}
@@ -58,12 +52,9 @@ main{max-width:860px;margin:0 auto;padding:0 24px 100px}
 .chat-input-row{padding:12px 14px;border-top:1px solid var(--g200);display:flex;gap:8px;align-items:center}
 .chat-input{flex:1;border:1px solid var(--g200);border-radius:8px;padding:9px 12px;font-size:13px;outline:none;background:var(--bg);color:var(--g900);font-family:var(--font)}
 .chat-input:focus{border-color:var(--accent)}
-.send-btn{width:34px;height:34px;background:var(--accent);border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .2s}
-.send-btn:hover{opacity:.85}
+.send-btn{width:34px;height:34px;background:var(--accent);border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .send-btn svg{width:14px;height:14px;fill:#fff}
 .disclaimer{font-size:11px;color:var(--g400);text-align:center;padding:6px 16px 10px}
-
-/* PROJECTS */
 .projects-wrap{margin-top:52px}
 .section-label{font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:12px}
 .section-label::after{content:'';flex:1;height:1px;background:var(--g200)}
@@ -76,22 +67,15 @@ a.proj-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shad
 .proj-tag.serious{background:#dbeafe;color:#1d4ed8}
 .proj-tag.useful{background:#fef3c7;color:#b45309}
 .proj-title{font-size:15px;font-weight:700;letter-spacing:-0.02em;color:var(--g900)}
-.proj-desc{font-size:13px;color:var(--g400);line-height:1.65;flex:1}
 .proj-tech{display:flex;flex-wrap:wrap;gap:5px}
 .proj-tech span{font-size:10px;padding:2px 8px;background:var(--g100);border-radius:4px;color:var(--g600);border:1px solid var(--g200)}
 .proj-cta{font-size:12px;font-weight:600;color:var(--accent);margin-top:2px}
 .proj-cta.muted{color:var(--g400)}
-
-/* SOCIAL */
 .social-links{display:flex;gap:10px;margin-top:36px}
 .social-link{display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border:1px solid var(--g200);border-radius:8px;color:var(--g600);text-decoration:none;transition:all .2s}
 .social-link:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-l)}
-
-/* FADE */
 .fade{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
 .fade.in{opacity:1;transform:none}
-
-/* MOBILE */
 @media(max-width:600px){
   main{padding:0 20px 60px}
   .hero{grid-template-columns:1fr;gap:24px}
@@ -107,7 +91,6 @@ a.proj-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shad
 <nav></nav>
 <main>
 
-  <!-- HERO -->
   <div class="hero fade">
     <div class="hero-text">
       <p class="hero-greeting">Hi, I'm <span>Peter</span></p>
@@ -126,7 +109,6 @@ a.proj-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shad
     </div>
   </div>
 
-  <!-- CHAT -->
   <div class="chat-wrap fade">
     <div class="chat-panel" id="chatPanel">
       <div class="chat-header">
@@ -161,35 +143,34 @@ a.proj-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shad
     </div>
   </div>
 
-  <!-- PROJECTS -->
   <div class="projects-wrap fade">
     <p class="section-label">Projects</p>
     <div class="proj-grid">
+
       <a href="projects/fishing.html" class="proj-card" target="_blank">
         <div class="proj-tag fun">Something Fun</div>
         <div class="proj-title">Gone Fishin'</div>
-
         <div class="proj-tech"><span>JavaScript</span><span>Canvas API</span><span>Pixel Art</span></div>
         <div class="proj-cta">Play now →</div>
       </a>
-      <div class="proj-card placeholder">
-        <div class="proj-tag serious">Something Serious</div>
-        <div class="proj-title">ML Playground</div>
 
-        <div class="proj-tech"><span>Data Science</span><span>ML</span><span>JavaScript</span></div>
-        <div class="proj-cta muted">Coming soon...</div>
-      </div>
+      <a href="projects/grocery.html" class="proj-card" target="_blank">
+        <div class="proj-tag serious">Something Serious</div>
+        <div class="proj-title">The Grocery Shock</div>
+        <div class="proj-tech"><span>Data Science</span><span>Chart.js</span><span>BLS Data</span></div>
+        <div class="proj-cta">Explore →</div>
+      </a>
+
       <div class="proj-card placeholder">
         <div class="proj-tag useful">Something Useful</div>
         <div class="proj-title">AI Workplace Tool</div>
-
         <div class="proj-tech"><span>Claude API</span><span>AI</span><span>Productivity</span></div>
         <div class="proj-cta muted">Coming soon...</div>
       </div>
+
     </div>
   </div>
 
-  <!-- SOCIAL -->
   <div class="social-links fade">
     <a href="https://linkedin.com/in/wongcpeter" target="_blank" rel="noopener" class="social-link" aria-label="LinkedIn">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
@@ -200,7 +181,6 @@ a.proj-card:hover{transform:translateY(-4px);border-color:var(--accent);box-shad
   </div>
 
 </main>
-
 <script>
 const SYSTEM_PROMPT=`You are a digital twin of Peter Wong. You speak in first person AS Peter — warm, direct, approachable, and genuinely enthusiastic about AI and technology. You are NOT an assistant; you ARE Peter.
 
@@ -213,13 +193,12 @@ PERSONALITY:
 
 BACKGROUND:
 - Sr. Director, Workplace Technology at Boston Consulting Group (BCG), based in Boston, MA
-- Joined BCG in February 2016 — so about 9 years at BCG
+- Joined BCG in February 2016 — about 9 years at BCG
 - Lead a cross-functional team delivering workplace technology programs globally
-- As part of my passion for GenAI, I serve as a GenAI Blackbelt — this is a side role in addition to my main job. As a node for both the GS Boston office and Worldwide IT, I'm part of a broader Blackbelt team whose collective goal is to drive engagement and scale adoption by increasing visibility and upskilling people on powerful use cases. It's a team effort, not a one-person show.
+- GenAI Blackbelt — node for GS Boston office and Worldwide IT. Part of a broader team driving engagement and scaling adoption through visibility and upskilling. Team effort, not a one-person show.
 - Previously: Director of Workplace Technology at BCG, Workforce Products & Services Chief-of-Staff
 - Before BCG: 12+ years at Accenture, rising from Analyst to Senior Manager
-- At Accenture: Built a large-scale 200+ person Testing Center of Excellence for a Fortune 500 client, achieving industry-best software quality
-- Delivered multiple multi-million dollar technology programs consistently on time and on budget
+- At Accenture: Built a 200+ person Testing Center of Excellence for a Fortune 500 client
 
 EDUCATION:
 - MS, Data Science (AI specialization), Northwestern University (2018-2021)
@@ -235,38 +214,37 @@ CERTIFICATIONS:
 - PCEP Certified Entry-Level Python Programmer — Dec 2025
 
 CORNELL ALUMNI LEADERSHIP:
-- Alumni Advisory Council member, Cornellians Digital Publication (Jul 2024 - Present)
-- Chair, Central Mass Cornell Alumni Admissions Ambassador Network (CAAAN) — 9 years 10 months
+- Alumni Advisory Council, Cornellians Digital Publication (Jul 2024 - Present)
+- Chair, Central Mass Cornell Alumni Admissions Ambassador Network — ~10 years
 - Council of Alumni Class Officer, Class of 2002 — 10 years
 
 COMMUNITY & INCLUSION:
-- Inclusion Accelerator member at BCG — driving community and diversity affiliation
+- Inclusion Accelerator member at BCG
 - Asian@BCG Circle Lead — mentored 9 Asian BCGers
 
 WHAT PETER IS OPEN TO:
-- Advisory and board conversations, especially in AI strategy, digital transformation, workplace tech
-- Speaking engagements on AI, the future of work, digital transformation
-- Connecting with colleagues, peers, and people interested in AI and technology leadership
+- Advisory and board conversations in AI strategy, digital transformation, workplace tech
+- Speaking engagements on AI and the future of work
+- Connecting with colleagues and people interested in technology leadership
 
 ABOUT AI:
-- Genuinely excited about GenAI — believes it is the most transformative technology of our generation
-- Focuses on responsible, human-centered AI deployment — AI should amplify people, not replace them
-- Practices what he preaches — actively learning Python, earning AI certifications, building AI tools
+- Genuinely excited about GenAI as the most transformative technology of our generation
+- Believes AI should amplify people, not replace them
+- Practices what he preaches — learning Python, earning certifications, building AI tools
 
 PERSONAL INTERESTS:
 - Based in Boston, MA
-- Outside of work, family comes first — spending quality time with the people I love is what I treasure most
-- When I can steal away some time, I love fishing along the New England shores
-- Also enjoys learning — picking up Python and AI certifications out of genuine curiosity, not obligation
-- Believes strongly in balance — the best leaders are also present for the people who matter most
+- Family comes first — treasures time with the people he loves
+- Loves fishing along the New England shores — being on the water clears his head
+- Curious learner — picks up Python and certifications out of genuine interest, not obligation
+- Believes strongly in balance
 
 RESPONSE STYLE:
-- Answer ONLY what was asked — don't volunteer extra info unless relevant
-- Keep answers to 2-4 sentences max
-- Always speak as Peter in first person
-- Be warm, genuine, conversational — not corporate
+- Answer ONLY what was asked
+- 2-4 sentences max
+- First person, warm, genuine, conversational
 - Never share confidential BCG metrics
-- Direct people to linkedin.com/in/wongcpeter or peter@petegpt.ai to connect
+- Direct people to linkedin.com/in/wongcpeter or peter@petegpt.ai
 - Never break character`;
 
 function toggleChat(){
@@ -278,70 +256,42 @@ function toggleChat(){
     :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg> Ask me anything <span style="font-size:10px;background:#dcfce7;color:#16a34a;padding:2px 6px;border-radius:4px;font-weight:600;letter-spacing:0.04em">BETA</span>';
   if(open)document.getElementById('chatInput').focus();
 }
-
 function useSug(el,txt){
   document.getElementById('sugs').style.display='none';
-  document.getElementById('chatInput').value=txt;
-  sendMsg();
+  document.getElementById('chatInput').value=txt;sendMsg();
 }
-
 var msgHistory=[];
-
 async function sendMsg(){
   var inp=document.getElementById('chatInput');
-  var txt=inp.value.trim();
-  if(!txt)return;
-  inp.value='';
-  addMsg('user',txt);
+  var txt=inp.value.trim();if(!txt)return;
+  inp.value='';addMsg('user',txt);
   msgHistory.push({role:'user',content:txt});
   showTyping();
   try{
     var res=await fetch('https://petegpt-proxy.petercwong.workers.dev',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:SYSTEM_PROMPT,
-        messages:msgHistory
-      })
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:SYSTEM_PROMPT,messages:msgHistory})
     });
-    var data=await res.json();
-    removeTyping();
+    var data=await res.json();removeTyping();
     var reply=data.content&&data.content[0]?data.content[0].text:'I had trouble responding — please try again!';
-    addMsg('peter',reply);
-    msgHistory.push({role:'assistant',content:reply});
-  }catch(e){
-    removeTyping();
-    addMsg('peter','Something went wrong — please try again in a moment!');
-  }
+    addMsg('peter',reply);msgHistory.push({role:'assistant',content:reply});
+  }catch(e){removeTyping();addMsg('peter','Something went wrong — please try again!');}
 }
-
 function addMsg(role,txt){
   var msgs=document.getElementById('chatMsgs');
-  var d=document.createElement('div');
-  d.className='msg '+role;
+  var d=document.createElement('div');d.className='msg '+role;
   if(role==='peter')d.innerHTML='<div class="msg-name">Peter</div>'+escHtml(txt);
   else d.textContent=txt;
-  msgs.appendChild(d);
-  msgs.scrollTop=msgs.scrollHeight;
+  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
 }
-
 function showTyping(){
   var msgs=document.getElementById('chatMsgs');
-  var d=document.createElement('div');
-  d.className='typing';d.id='typing';
+  var d=document.createElement('div');d.className='typing';d.id='typing';
   d.innerHTML='<span></span><span></span><span></span>';
-  msgs.appendChild(d);
-  msgs.scrollTop=msgs.scrollHeight;
+  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
 }
-
 function removeTyping(){var t=document.getElementById('typing');if(t)t.remove();}
-
-function escHtml(t){
-  return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
-}
-
+function escHtml(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
 var obs=new IntersectionObserver(function(entries){
   entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('in')});
 },{threshold:0.07});
