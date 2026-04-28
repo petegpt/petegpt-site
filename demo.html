@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🐼 Panda Bamboo Catch</title>
+  <title>🦁 Lion: King of the Jungle</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: #1a1a2e;
+      background: #1a0a00;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -17,92 +17,151 @@
       color: white;
       overflow: hidden;
     }
-    h1 { font-size: 1.5rem; margin-bottom: 10px; color: #00ff99; }
+    h1 { font-size: 1.5rem; margin-bottom: 10px; color: #ffaa00; }
     #game-area {
       position: relative;
       width: 400px;
       height: 500px;
-      background: #16213e;
-      border: 2px solid #00ff99;
+      background: #2d1200;
+      border: 2px solid #ffaa00;
       border-radius: 12px;
       overflow: hidden;
     }
-    #panda { position: absolute; bottom: 10px; font-size: 2.5rem; user-select: none; }
-    .bamboo { position: absolute; font-size: 1.8rem; user-select: none; }
+    /* Savanna ground */
+    #ground {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 55px;
+      background: #5a3300;
+      border-top: 3px solid #7a4800;
+    }
+    #lion { position: absolute; bottom: 12px; font-size: 2.5rem; user-select: none; z-index: 2; }
+    .prey { position: absolute; font-size: 1.8rem; user-select: none; }
+    .hunter { position: absolute; font-size: 1.6rem; user-select: none; }
     #scoreboard { display: flex; gap: 30px; margin-top: 10px; font-size: 1rem; }
-    #score { color: #00ff99; }
-    #lives { color: #ff6b6b; }
-    #message { margin-top: 15px; font-size: 1.2rem; color: #ffd700; height: 1.5rem; }
+    #score { color: #ffaa00; }
+    #lives { color: #ff4444; }
+    #crown { color: #ffd700; }
+    #message { margin-top: 15px; font-size: 1.1rem; color: #ffd700; height: 1.5rem; text-align: center; }
     button {
       margin-top: 12px; padding: 8px 24px;
-      background: #00ff99; color: #0f0f0f;
+      background: #ffaa00; color: #1a0a00;
       border: none; border-radius: 6px;
-      font-family: monospace; font-size: 1rem; cursor: pointer;
+      font-family: monospace; font-size: 1rem;
+      font-weight: bold; cursor: pointer;
     }
-    button:hover { background: #00cc77; }
+    button:hover { background: #ffcc44; }
   </style>
 </head>
 <body>
-  <h1>🐼 Panda Bamboo Catch</h1>
+  <h1>🦁 King of the Jungle</h1>
   <div id="game-area">
-    <div id="panda">🐼</div>
+    <div id="ground"></div>
+    <div id="lion">🦁</div>
   </div>
   <div id="scoreboard">
-    <span id="score">🎋 Score: 0</span>
+    <span id="score">🥩 Score: 0</span>
+    <span id="crown">👑 x0</span>
     <span id="lives">❤️ Lives: 3</span>
   </div>
-  <div id="message">Use arrow keys to move!</div>
+  <div id="message">Catch prey. Dodge hunters. ROAR.</div>
   <button id="startBtn">Start Game</button>
+
   <script>
     const gameArea = document.getElementById('game-area');
-    const panda = document.getElementById('panda');
+    const lion = document.getElementById('lion');
     const scoreEl = document.getElementById('score');
     const livesEl = document.getElementById('lives');
+    const crownEl = document.getElementById('crown');
     const messageEl = document.getElementById('message');
     const startBtn = document.getElementById('startBtn');
-    const GAME_WIDTH = 400, PANDA_WIDTH = 40;
-    let pandaX = GAME_WIDTH/2 - PANDA_WIDTH/2;
-    let score=0, lives=3, bamboos=[], spawnInterval, gameLoop, keys={};
-    function setPandaPos(){ panda.style.left = pandaX+'px'; }
-    function spawnBamboo(){
+
+    const GAME_WIDTH = 400, LION_WIDTH = 44;
+    let lionX = GAME_WIDTH / 2 - LION_WIDTH / 2;
+    let score = 0, lives = 3, crowns = 0;
+    let items = [], spawnInterval, gameLoop, keys = {};
+
+    function setLionPos() { lion.style.left = lionX + 'px'; }
+
+    function spawnItem() {
       const el = document.createElement('div');
-      el.classList.add('bamboo'); el.textContent='🎋';
-      const x = Math.random()*(GAME_WIDTH-30);
-      el.style.left=x+'px'; el.style.top='0px';
+      const rand = Math.random();
+      let type, emoji;
+      if (rand < 0.55) { type = 'prey'; emoji = '🥩'; }
+      else if (rand < 0.75) { type = 'crown'; emoji = '👑'; }
+      else { type = 'hunter'; emoji = '🏹'; }
+
+      el.classList.add(type === 'hunter' ? 'hunter' : 'prey');
+      el.textContent = emoji;
+      const x = Math.random() * (GAME_WIDTH - 36);
+      el.style.left = x + 'px';
+      el.style.top = '0px';
       gameArea.appendChild(el);
-      bamboos.push({el,x,y:0,speed:2+Math.random()*2+score*0.05});
+      items.push({ el, x, y: 0, type, speed: 1.8 + Math.random() * 2.2 + score * 0.03 });
     }
-    function update(){
-      if(keys['ArrowLeft']) pandaX=Math.max(0,pandaX-8);
-      if(keys['ArrowRight']) pandaX=Math.min(GAME_WIDTH-PANDA_WIDTH,pandaX+8);
-      setPandaPos();
-      bamboos=bamboos.filter(b=>{
-        b.y+=b.speed; b.el.style.top=b.y+'px';
-        const caught=b.y+30>=460 && b.x>pandaX-20 && b.x<pandaX+PANDA_WIDTH+10;
-        const missed=b.y>500;
-        if(caught){score++;scoreEl.textContent='🎋 Score: '+score;b.el.remove();return false;}
-        if(missed){lives--;livesEl.textContent='❤️ Lives: '+lives;b.el.remove();if(lives<=0)endGame();return false;}
+
+    function update() {
+      if (keys['ArrowLeft']) lionX = Math.max(0, lionX - 9);
+      if (keys['ArrowRight']) lionX = Math.min(GAME_WIDTH - LION_WIDTH, lionX + 9);
+      setLionPos();
+
+      items = items.filter(item => {
+        item.y += item.speed;
+        item.el.style.top = item.y + 'px';
+
+        const hit = item.y + 32 >= 458 && item.x > lionX - 22 && item.x < lionX + LION_WIDTH + 12;
+        const gone = item.y > 510;
+
+        if (hit) {
+          item.el.remove();
+          if (item.type === 'prey') {
+            score++;
+            scoreEl.textContent = '🥩 Score: ' + score;
+          } else if (item.type === 'crown') {
+            crowns++;
+            crownEl.textContent = '👑 x' + crowns;
+            lives = Math.min(lives + 1, 5);
+            livesEl.textContent = '❤️ Lives: ' + lives;
+            messageEl.textContent = 'ROAR! Extra life! 👑';
+            setTimeout(() => { if (lives > 0) messageEl.textContent = 'Catch prey. Dodge hunters.'; }, 1200);
+          } else {
+            lives--;
+            livesEl.textContent = '❤️ Lives: ' + lives;
+            messageEl.textContent = '🏹 Ouch! A hunter got you!';
+            setTimeout(() => { if (lives > 0) messageEl.textContent = 'Catch prey. Dodge hunters.'; }, 1000);
+            if (lives <= 0) endGame();
+          }
+          return false;
+        }
+        if (gone) { item.el.remove(); return false; }
         return true;
       });
     }
-    function startGame(){
-      score=0;lives=3;bamboos=[];pandaX=GAME_WIDTH/2-PANDA_WIDTH/2;
-      scoreEl.textContent='🎋 Score: 0';livesEl.textContent='❤️ Lives: 3';
-      messageEl.textContent='Use arrow keys to move!';
-      gameArea.querySelectorAll('.bamboo').forEach(e=>e.remove());
-      startBtn.textContent='Restart'; setPandaPos();
-      clearInterval(spawnInterval);clearInterval(gameLoop);
-      spawnInterval=setInterval(spawnBamboo,900);
-      gameLoop=setInterval(update,16);
+
+    function startGame() {
+      score = 0; lives = 3; crowns = 0; items = [];
+      lionX = GAME_WIDTH / 2 - LION_WIDTH / 2;
+      scoreEl.textContent = '🥩 Score: 0';
+      livesEl.textContent = '❤️ Lives: 3';
+      crownEl.textContent = '👑 x0';
+      messageEl.textContent = 'Catch prey. Dodge hunters. ROAR.';
+      gameArea.querySelectorAll('.prey, .hunter').forEach(e => e.remove());
+      startBtn.textContent = 'Restart';
+      setLionPos();
+      clearInterval(spawnInterval); clearInterval(gameLoop);
+      spawnInterval = setInterval(spawnItem, 850);
+      gameLoop = setInterval(update, 16);
     }
-    function endGame(){
-      clearInterval(spawnInterval);clearInterval(gameLoop);
-      messageEl.textContent='Game Over! Score: '+score+' 🎋';
+
+    function endGame() {
+      clearInterval(spawnInterval); clearInterval(gameLoop);
+      messageEl.textContent = 'Dethroned! Score: ' + score + ' | Crowns: ' + crowns;
     }
-    document.addEventListener('keydown',e=>{keys[e.key]=true;});
-    document.addEventListener('keyup',e=>{keys[e.key]=false;});
-    startBtn.addEventListener('click',startGame);
-    setPandaPos();
+
+    document.addEventListener('keydown', e => { keys[e.key] = true; e.preventDefault(); });
+    document.addEventListener('keyup', e => { keys[e.key] = false; });
+    startBtn.addEventListener('click', startGame);
+    setLionPos();
   </script>
 </body>
 </html>
