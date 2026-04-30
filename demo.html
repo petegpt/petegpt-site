@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🦁 Lion: King of the Jungle</title>
+  <title>🦃 Turkey Trot: Escape Thanksgiving!</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: #1a0a00;
+      background: #2c1a00;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -17,151 +17,449 @@
       color: white;
       overflow: hidden;
     }
-    h1 { font-size: 1.5rem; margin-bottom: 10px; color: #ffaa00; }
+    h1 { font-size: 1.5rem; margin-bottom: 4px; color: #ff8800; letter-spacing: 1px; }
+    #subtitle { color: #cc9955; font-size: 0.82rem; margin-bottom: 10px; }
     #game-area {
       position: relative;
       width: 400px;
       height: 500px;
-      background: #2d1200;
-      border: 2px solid #ffaa00;
-      border-radius: 12px;
       overflow: hidden;
+      border: 2px solid #ff8800;
+      border-radius: 12px;
     }
-    /* Savanna ground */
+    /* Sky */
+    #sky {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, #5a3500 0%, #c07030 40%, #e8a050 65%, #8B4513 65%);
+    }
+    /* Ground */
     #ground {
       position: absolute;
       bottom: 0; left: 0; right: 0;
-      height: 55px;
-      background: #5a3300;
-      border-top: 3px solid #7a4800;
+      height: 60px;
+      background: #5c2d00;
+      border-top: 3px solid #7a4010;
     }
-    #lion { position: absolute; bottom: 12px; font-size: 2.5rem; user-select: none; z-index: 2; }
-    .prey { position: absolute; font-size: 1.8rem; user-select: none; }
-    .hunter { position: absolute; font-size: 1.6rem; user-select: none; }
-    #scoreboard { display: flex; gap: 30px; margin-top: 10px; font-size: 1rem; }
-    #score { color: #ffaa00; }
-    #lives { color: #ff4444; }
-    #crown { color: #ffd700; }
-    #message { margin-top: 15px; font-size: 1.1rem; color: #ffd700; height: 1.5rem; text-align: center; }
+    /* Grass strip */
+    #grass {
+      position: absolute;
+      bottom: 57px; left: 0; right: 0;
+      height: 18px;
+      background: #5a6e20;
+      border-top: 2px solid #7a9020;
+    }
+    /* Barn silhouette */
+    #barn {
+      position: absolute;
+      bottom: 72px;
+      right: 20px;
+      font-size: 4rem;
+      opacity: 0.35;
+      user-select: none;
+    }
+    #turkey {
+      position: absolute;
+      bottom: 16px;
+      left: 55px;
+      font-size: 2.8rem;
+      user-select: none;
+      z-index: 5;
+    }
+    .leaf {
+      position: absolute;
+      font-size: 1.1rem;
+      user-select: none;
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    .obstacle {
+      position: absolute;
+      font-size: 2rem;
+      user-select: none;
+      z-index: 4;
+    }
+    .collectible {
+      position: absolute;
+      font-size: 1.6rem;
+      user-select: none;
+      z-index: 4;
+    }
+    /* Overlay for start/end */
+    #overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      gap: 10px;
+    }
+    #overlay h2 { font-size: 1.6rem; color: #ffcc44; }
+    #overlay p { font-size: 0.9rem; color: #ddd; text-align: center; padding: 0 20px; }
+    #overlay .final-score { font-size: 1.2rem; color: #ff8800; }
     button {
-      margin-top: 12px; padding: 8px 24px;
-      background: #ffaa00; color: #1a0a00;
-      border: none; border-radius: 6px;
-      font-family: monospace; font-size: 1rem;
-      font-weight: bold; cursor: pointer;
+      padding: 9px 28px;
+      background: #ff8800;
+      color: #1a0a00;
+      border: none;
+      border-radius: 7px;
+      font-family: monospace;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 4px;
     }
-    button:hover { background: #ffcc44; }
+    button:hover { background: #ffaa44; }
+    #scoreboard {
+      display: flex;
+      gap: 24px;
+      margin-top: 10px;
+      font-size: 0.95rem;
+    }
+    #score-val { color: #ffcc00; }
+    #level-val { color: #88ff88; }
+    #lives-val { color: #ff6666; }
+    #flash {
+      margin-top: 10px;
+      font-size: 1.05rem;
+      color: #ffd700;
+      height: 1.4rem;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
-  <h1>🦁 King of the Jungle</h1>
+  <h1>🦃 Turkey Trot</h1>
+  <div id="subtitle">Escape Thanksgiving! 🍂</div>
+
   <div id="game-area">
+    <div id="sky"></div>
     <div id="ground"></div>
-    <div id="lion">🦁</div>
+    <div id="grass"></div>
+    <div id="barn">🏚️</div>
+    <span id="turkey">🦃</span>
+
+    <!-- Start overlay -->
+    <div id="overlay">
+      <h2>🦃 Turkey Trot</h2>
+      <p>Dodge the axes &amp; forks.<br>Collect corn for points.<br>
+      <strong>Space / Tap</strong> to jump. Double-jump unlocks at level 3!</p>
+      <button id="startBtn" onclick="startGame()">Start Game</button>
+    </div>
   </div>
+
   <div id="scoreboard">
-    <span id="score">🥩 Score: 0</span>
-    <span id="crown">👑 x0</span>
-    <span id="lives">❤️ Lives: 3</span>
+    <span id="score-val">🌽 Score: 0</span>
+    <span id="level-val">⚡ Lv 1</span>
+    <span id="lives-val">❤️❤️❤️</span>
   </div>
-  <div id="message">Catch prey. Dodge hunters. ROAR.</div>
-  <button id="startBtn">Start Game</button>
+  <div id="flash">Dodge axes. Collect corn. GOBBLE.</div>
 
   <script>
-    const gameArea = document.getElementById('game-area');
-    const lion = document.getElementById('lion');
-    const scoreEl = document.getElementById('score');
-    const livesEl = document.getElementById('lives');
-    const crownEl = document.getElementById('crown');
-    const messageEl = document.getElementById('message');
-    const startBtn = document.getElementById('startBtn');
+    // ── Config ──────────────────────────────────────────────────────────────
+    const GAME_W = 400, GAME_H = 500;
+    const GROUND_TOP = GAME_H - 60;   // y where ground starts (px from top)
+    const TURKEY_GROUND_BOTTOM = 16;  // px from bottom of game area
+    const TURKEY_X = 55;
+    const TURKEY_W = 38, TURKEY_H = 38;
+    const OBJ_W = 32, OBJ_H = 32;
+    const JUMP_V = 15;
+    const GRAVITY = 0.55;
+    const INVINCIBLE_FRAMES = 90;
 
-    const GAME_WIDTH = 400, LION_WIDTH = 44;
-    let lionX = GAME_WIDTH / 2 - LION_WIDTH / 2;
-    let score = 0, lives = 3, crowns = 0;
-    let items = [], spawnInterval, gameLoop, keys = {};
+    // ── State ────────────────────────────────────────────────────────────────
+    let score, lives, speed, level, frameCount;
+    let running = false;
+    let turkeyY = 0;        // px above ground
+    let jumpVelocity = 0;
+    let jumpsLeft = 1;      // double-jump at level 3+
+    let invincible = false, invincibleTimer = 0;
+    let objects = [];       // {el, x, y, type, collected}
+    let leaves = [];
+    let animId;
+    let flashTimeout;
+    let lastObstacleFrame = 0, lastCornFrame = 0, lastLeafFrame = 0;
 
-    function setLionPos() { lion.style.left = lionX + 'px'; }
+    // ── Elements ─────────────────────────────────────────────────────────────
+    const gameArea   = document.getElementById('game-area');
+    const turkeyEl   = document.getElementById('turkey');
+    const overlay    = document.getElementById('overlay');
+    const scoreEl    = document.getElementById('score-val');
+    const levelEl    = document.getElementById('level-val');
+    const livesEl    = document.getElementById('lives-val');
+    const flashEl    = document.getElementById('flash');
 
-    function spawnItem() {
-      const el = document.createElement('div');
-      const rand = Math.random();
-      let type, emoji;
-      if (rand < 0.55) { type = 'prey'; emoji = '🥩'; }
-      else if (rand < 0.75) { type = 'crown'; emoji = '👑'; }
-      else { type = 'hunter'; emoji = '🏹'; }
+    // ── Init ─────────────────────────────────────────────────────────────────
+    function startGame() {
+      score = 0; lives = 3; speed = 3.2; level = 1;
+      frameCount = 0; lastObstacleFrame = -999; lastCornFrame = -999; lastLeafFrame = -999;
+      running = true; invincible = false; invincibleTimer = 0;
+      turkeyY = 0; jumpVelocity = 0; jumpsLeft = 1;
 
-      el.classList.add(type === 'hunter' ? 'hunter' : 'prey');
-      el.textContent = emoji;
-      const x = Math.random() * (GAME_WIDTH - 36);
-      el.style.left = x + 'px';
-      el.style.top = '0px';
-      gameArea.appendChild(el);
-      items.push({ el, x, y: 0, type, speed: 1.8 + Math.random() * 2.2 + score * 0.03 });
+      objects.forEach(o => o.el.remove());
+      objects = [];
+      leaves.forEach(l => l.el.remove());
+      leaves = [];
+
+      turkeyEl.textContent = '🦃';
+      turkeyEl.style.bottom = TURKEY_GROUND_BOTTOM + 'px';
+      turkeyEl.style.opacity = '1';
+
+      overlay.style.display = 'none';
+      updateUI();
+      flashEl.textContent = '';
+
+      cancelAnimationFrame(animId);
+      loop();
     }
 
-    function update() {
-      if (keys['ArrowLeft']) lionX = Math.max(0, lionX - 9);
-      if (keys['ArrowRight']) lionX = Math.min(GAME_WIDTH - LION_WIDTH, lionX + 9);
-      setLionPos();
+    // ── Main loop ────────────────────────────────────────────────────────────
+    function loop() {
+      if (!running) return;
+      frameCount++;
 
-      items = items.filter(item => {
-        item.y += item.speed;
-        item.el.style.top = item.y + 'px';
+      // Level up every 400 frames
+      const newLevel = 1 + Math.floor(frameCount / 400);
+      if (newLevel !== level) {
+        level = newLevel;
+        speed = 3.2 + (level - 1) * 0.55;
+        levelEl.textContent = `⚡ Lv ${level}`;
+        if (level === 3) showFlash('🦅 Double-jump unlocked!');
+      }
 
-        const hit = item.y + 32 >= 458 && item.x > lionX - 22 && item.x < lionX + LION_WIDTH + 12;
-        const gone = item.y > 510;
+      // Turkey physics
+      turkeyY += jumpVelocity;
+      jumpVelocity -= GRAVITY;
+      if (turkeyY <= 0) {
+        turkeyY = 0;
+        jumpVelocity = 0;
+        jumpsLeft = level >= 3 ? 2 : 1;
+      }
+      turkeyEl.style.bottom = (TURKEY_GROUND_BOTTOM + turkeyY) + 'px';
 
-        if (hit) {
-          item.el.remove();
-          if (item.type === 'prey') {
-            score++;
-            scoreEl.textContent = '🥩 Score: ' + score;
-          } else if (item.type === 'crown') {
-            crowns++;
-            crownEl.textContent = '👑 x' + crowns;
-            lives = Math.min(lives + 1, 5);
-            livesEl.textContent = '❤️ Lives: ' + lives;
-            messageEl.textContent = 'ROAR! Extra life! 👑';
-            setTimeout(() => { if (lives > 0) messageEl.textContent = 'Catch prey. Dodge hunters.'; }, 1200);
-          } else {
+      // Invincibility flash
+      if (invincible) {
+        invincibleTimer--;
+        turkeyEl.style.opacity = Math.floor(invincibleTimer / 6) % 2 === 0 ? '0.25' : '1';
+        if (invincibleTimer <= 0) { invincible = false; turkeyEl.style.opacity = '1'; }
+      }
+
+      // Spawn obstacles
+      const obsInterval = Math.max(50, 130 - level * 8);
+      if (frameCount - lastObstacleFrame >= obsInterval + rand(0, 35)) {
+        spawnObstacle();
+        lastObstacleFrame = frameCount;
+      }
+
+      // Spawn corn
+      const cornInterval = Math.max(70, 160 - level * 6);
+      if (frameCount - lastCornFrame >= cornInterval + rand(0, 25)) {
+        spawnCorn();
+        lastCornFrame = frameCount;
+      }
+
+      // Autumn leaves (decorative)
+      if (frameCount - lastLeafFrame >= 40 + rand(0, 30)) {
+        spawnLeaf();
+        lastLeafFrame = frameCount;
+      }
+
+      // Move & collide objects
+      const dead = [];
+      for (let i = 0; i < objects.length; i++) {
+        const obj = objects[i];
+        obj.x -= speed;
+        obj.el.style.left = obj.x + 'px';
+        if (obj.x < -60) { dead.push(i); continue; }
+
+        if (!obj.collected && checkCollision(obj)) {
+          if (obj.type === 'corn') {
+            obj.collected = true;
+            score += 10;
+            scoreEl.textContent = `🌽 Score: ${score}`;
+            showFlash('🌽 +10!');
+            dead.push(i);
+          } else if (obj.type === 'turkey_friend') {
+            obj.collected = true;
+            score += 25;
+            scoreEl.textContent = `🌽 Score: ${score}`;
+            showFlash('🦃 +25! Gobble squad!');
+            dead.push(i);
+          } else if (!invincible) {
             lives--;
-            livesEl.textContent = '❤️ Lives: ' + lives;
-            messageEl.textContent = '🏹 Ouch! A hunter got you!';
-            setTimeout(() => { if (lives > 0) messageEl.textContent = 'Catch prey. Dodge hunters.'; }, 1000);
-            if (lives <= 0) endGame();
+            updateLives();
+            invincible = true;
+            invincibleTimer = INVINCIBLE_FRAMES;
+            dead.push(i);
+            if (lives <= 0) { gameOver(); return; }
+            else showFlash(lives === 1 ? '💥 Last life!' : '💥 Ouch!');
           }
-          return false;
         }
-        if (gone) { item.el.remove(); return false; }
-        return true;
+      }
+
+      // Prune dead objects (reverse to preserve indices)
+      for (let i = dead.length - 1; i >= 0; i--) {
+        objects[dead[i]].el.remove();
+        objects.splice(dead[i], 1);
+      }
+
+      // Move leaves
+      for (let i = leaves.length - 1; i >= 0; i--) {
+        const l = leaves[i];
+        l.x -= speed * 0.6;
+        l.y += l.vy;
+        l.angle += l.spin;
+        l.el.style.left = l.x + 'px';
+        l.el.style.top = l.y + 'px';
+        l.el.style.transform = `rotate(${l.angle}deg)`;
+        if (l.x < -30 || l.y > GAME_H) {
+          l.el.remove();
+          leaves.splice(i, 1);
+        }
+      }
+
+      animId = requestAnimationFrame(loop);
+    }
+
+    // ── Collision ─────────────────────────────────────────────────────────────
+    function checkCollision(obj) {
+      const tLeft = TURKEY_X + 6;
+      const tRight = TURKEY_X + TURKEY_W - 6;
+      const tBottom = TURKEY_GROUND_BOTTOM + turkeyY + 4;
+      const tTop = tBottom + TURKEY_H - 8;
+
+      const oLeft = obj.x + 4;
+      const oRight = obj.x + OBJ_W - 4;
+      const oBottom = obj.groundOffset;
+      const oTop = oBottom + OBJ_H;
+
+      return tRight > oLeft && tLeft < oRight && tTop > oBottom && tBottom < oTop;
+    }
+
+    // ── Spawners ──────────────────────────────────────────────────────────────
+    function spawnObstacle() {
+      // Low obstacles (jump over) or high obstacles (duck under — hint: can't duck, so just jump)
+      const isHigh = level > 2 && Math.random() < 0.2;
+      const groundOffset = isHigh
+        ? TURKEY_GROUND_BOTTOM + rand(48, 70)   // mid-air danger
+        : TURKEY_GROUND_BOTTOM + rand(0, 8);    // ground level
+
+      const types = ['🪓', '🍴', '🔪', '🪖'];
+      const emoji = types[Math.floor(Math.random() * types.length)];
+
+      const el = document.createElement('span');
+      el.className = 'obstacle';
+      el.textContent = emoji;
+      el.style.left = (GAME_W + 10) + 'px';
+      el.style.bottom = groundOffset + 'px';
+      gameArea.appendChild(el);
+      objects.push({ el, x: GAME_W + 10, groundOffset, type: 'hazard' });
+    }
+
+    function spawnCorn() {
+      // Corn is either on the ground or a bit elevated (requires jump)
+      const elevated = Math.random() < 0.45;
+      const groundOffset = elevated
+        ? TURKEY_GROUND_BOTTOM + rand(40, 80)
+        : TURKEY_GROUND_BOTTOM + rand(0, 10);
+
+      const el = document.createElement('span');
+      el.className = 'collectible';
+      el.textContent = Math.random() < 0.15 ? '🦃' : '🌽';
+      const isFriend = el.textContent === '🦃';
+      el.style.left = (GAME_W + 10) + 'px';
+      el.style.bottom = groundOffset + 'px';
+      gameArea.appendChild(el);
+      objects.push({ el, x: GAME_W + 10, groundOffset, type: isFriend ? 'turkey_friend' : 'corn' });
+    }
+
+    function spawnLeaf() {
+      const leafEmojis = ['🍂', '🍁', '🍃'];
+      const el = document.createElement('span');
+      el.className = 'leaf';
+      el.textContent = leafEmojis[Math.floor(Math.random() * leafEmojis.length)];
+      const startY = rand(20, 280);
+      el.style.left = (GAME_W + 10) + 'px';
+      el.style.top = startY + 'px';
+      gameArea.appendChild(el);
+      leaves.push({
+        el, x: GAME_W + 10, y: startY,
+        vy: rand(0.3, 0.9),
+        angle: rand(0, 360),
+        spin: (Math.random() - 0.5) * 4
       });
     }
 
-    function startGame() {
-      score = 0; lives = 3; crowns = 0; items = [];
-      lionX = GAME_WIDTH / 2 - LION_WIDTH / 2;
-      scoreEl.textContent = '🥩 Score: 0';
-      livesEl.textContent = '❤️ Lives: 3';
-      crownEl.textContent = '👑 x0';
-      messageEl.textContent = 'Catch prey. Dodge hunters. ROAR.';
-      gameArea.querySelectorAll('.prey, .hunter').forEach(e => e.remove());
-      startBtn.textContent = 'Restart';
-      setLionPos();
-      clearInterval(spawnInterval); clearInterval(gameLoop);
-      spawnInterval = setInterval(spawnItem, 850);
-      gameLoop = setInterval(update, 16);
+    // ── Game over ─────────────────────────────────────────────────────────────
+    function gameOver() {
+      running = false;
+      cancelAnimationFrame(animId);
+      turkeyEl.textContent = '💀';
+      turkeyEl.style.opacity = '1';
+      objects.forEach(o => o.el.remove()); objects = [];
+      leaves.forEach(l => l.el.remove()); leaves = [];
+
+      overlay.innerHTML = `
+        <h2>🍽️ Got Caught!</h2>
+        <p class="final-score">Score: <strong style="color:#ffcc44">${score}</strong></p>
+        <p>${getEpitaph(score)}</p>
+        <button onclick="startGame()">Try Again</button>
+      `;
+      overlay.style.display = 'flex';
     }
 
-    function endGame() {
-      clearInterval(spawnInterval); clearInterval(gameLoop);
-      messageEl.textContent = 'Dethroned! Score: ' + score + ' | Crowns: ' + crowns;
+    function getEpitaph(s) {
+      if (s >= 300) return '🏆 Legendary gobbler. True Thanksgiving survivor.';
+      if (s >= 200) return '🦅 Impressive trot! Almost free range.';
+      if (s >= 100) return '🌽 Not bad. The corn appreciates your sacrifice.';
+      if (s >= 50)  return '😤 The farmers will remember your bravery.';
+      return '🥧 Ended up as pie. Better luck next November.';
     }
 
-    document.addEventListener('keydown', e => { keys[e.key] = true; e.preventDefault(); });
-    document.addEventListener('keyup', e => { keys[e.key] = false; });
-    startBtn.addEventListener('click', startGame);
-    setLionPos();
+    // ── UI ────────────────────────────────────────────────────────────────────
+    function updateUI() {
+      scoreEl.textContent = `🌽 Score: ${score}`;
+      levelEl.textContent = `⚡ Lv ${level}`;
+      updateLives();
+    }
+
+    function updateLives() {
+      livesEl.textContent = '❤️'.repeat(Math.max(0, lives)) || '💀';
+    }
+
+    function showFlash(text) {
+      flashEl.textContent = text;
+      clearTimeout(flashTimeout);
+      flashTimeout = setTimeout(() => flashEl.textContent = '', 1000);
+    }
+
+    // ── Jump ──────────────────────────────────────────────────────────────────
+    function doJump() {
+      if (!running) return;
+      if (jumpsLeft > 0) {
+        jumpVelocity = JUMP_V;
+        jumpsLeft--;
+      }
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
+
+    // ── Controls ──────────────────────────────────────────────────────────────
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Space' || e.code === 'ArrowUp') {
+        e.preventDefault();
+        doJump();
+      }
+    });
+    gameArea.addEventListener('click', doJump);
+    gameArea.addEventListener('touchstart', e => {
+      e.preventDefault();
+      doJump();
+    }, { passive: false });
   </script>
 </body>
 </html>
